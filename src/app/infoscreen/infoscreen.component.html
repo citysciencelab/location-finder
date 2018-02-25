@@ -1,0 +1,153 @@
+<div id="info" (window:storage)="receiveMapEvent($event)">
+
+  <div id="steps-infoscreen">
+    <div id="step1" *ngIf="progress === 1">
+      <div class="header">
+        <h1></h1>
+        <div class="progress-field selected">1</div>
+      </div>
+      <div id="introtextheader">
+        <p i18n>Looking for a Congress Hotel</p>
+        <p class="subheader" i18n>Conference room, seminar rooms, exhibition rooms, 1000 beds</p>
+      </div>
+      <div id="introtext">
+        <img id="kongress" src="./assets/Bild1.png">
+        <p i18n>11 parcels have been preselected based on the following criteria:</p>
+        <ul>
+          <li i18n>20.000 m² floor space or more</li>
+          <li i18n>no more than 10 minutes away from the nearest transit stop</li>
+          <li i18n>area undeveloped or easy to convert</li>
+          <li i18n>building permission given by law</li>
+        </ul>
+      </div>
+    </div>
+
+    <div id="step2" *ngIf="progress === 2">
+      <div class="header">
+        <h1 i18n>Adjust criteria</h1>
+        <div class="progress-field selected">2</div>
+      </div>
+      <div class="row">
+        <app-radar-chart [className]="'radar-chart-step2'" [chartDatas]="[targetChartData]" [chartOptions]="radarChartOptions"></app-radar-chart>
+      </div>
+    </div>
+
+    <div id="step3" *ngIf="progress === 3" >
+      <div class="header">
+        <h1 i18n>Inspect parcels</h1>
+        <div class="progress-field selected">3</div>
+      </div>
+      <div class="row">
+        <app-radar-chart [className]="'radar-chart-step3'" [chartDatas]="[targetChartData, selectedFeatureChartData]" [chartOptions]="radarChartOptions"></app-radar-chart>
+        <div class="infotable" id="infotable3">
+          <div class="metalock" *ngIf="selectedFeature">
+            <div class="lock">
+              <img *ngIf="!isSelectedFeatureLocked()" id="lock_open" src="./assets/lock_open.png" />
+              <img *ngIf="isSelectedFeatureLocked()" id="lock_closed" src="./assets/lock_closed.png" />
+            </div>
+          </div>
+          <table *ngIf="selectedFeature">
+            <tr><td><b>{{selectedFeature.properties.Adresse}}</b></td></tr>
+            <tr><td><img [src]="'./assets/' + selectedFeature.id + '.JPG'" class="infoimage" /></td></tr>
+            <tr><td><b i18n="@@Area_long">Area:</b> {{selectedFeature.properties.Gesamtarea}} m²</td><tr>
+            <tr><td><b i18n="@@Scientific_long">Scientific institutions within 3 km radius:</b> {{selectedFeature.properties.Scientific}}</td><tr>
+            <tr><td><b i18n="@@Hotels_long">Hotels within 1 km radius:</b> {{selectedFeature.properties.Hotels1km}}</td></tr>
+            <tr><td><b i18n="@@Gastronomy_long">Gastronomic establishments within 500 m radius:</b> {{selectedFeature.properties.Gastro}}</td></tr>
+            <tr><td><b i18n="@@Fitness_long">Fitness and wellness offers within 500 m radius:</b> {{selectedFeature.properties.Fitness}}</td></tr>
+            <tr><td><b i18n="@@Cultural_long">Cultural institutions within 3 km radius:</b> {{selectedFeature.properties.Kultur}}</td></tr>
+            <tr><td><b i18n="@@Greenspace_long">Greenspace and parks within 500 m radius:</b> {{selectedFeature.properties.Park_m2}} m²</td></tr>
+            <tr><td><b i18n="@@Transit_long">Nearest transit stop:</b> {{selectedFeature.properties.Bahn}} {{selectedFeature.properties.Bahn_m}} m / {{selectedFeature.properties.Bahn_min}} min <span i18n>by foot</span></td></tr>
+            <tr><td><b i18n="@@Airport_long">Distance to airport:</b> {{selectedFeature.properties.AIR_km}} km / {{selectedFeature.properties.AIR_OEV}} min <span i18n>by public transport</span></td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div id="step4" *ngIf="progress === 4">
+      <div class="header">
+        <h1 i18n>Compare parcels</h1>
+        <div class="progress-field selected">4</div>
+      </div>
+      <div id="infotable-compare">
+        <table *ngIf="topFeaturesToDisplay.length > 0">
+          <tr>
+            <td></td>
+            <td *ngFor="let feature of topFeaturesToDisplay">
+              <img [src]="'./assets/' + feature.id + '.JPG'" class="infoimage" />
+            </td>
+          </tr>
+          <tr>
+            <td></td>
+            <td *ngFor="let feature of topFeaturesToDisplay; let i = index">
+              <app-radar-chart [className]="'radar-chart-step4-' + i" [chartDatas]="[targetChartData, topFeaturesChartDatas[i]]" [chartOptions]="radarChartOptionsCompare"></app-radar-chart>
+            </td>
+          </tr>
+          <tr>
+            <td style="font-weight:bold; width:300px;" i18n="@@Address_short">Address:</td>
+            <td *ngFor="let feature of topFeaturesToDisplay">{{feature.properties.Adresse}}</td>
+          </tr>
+          <tr>
+            <td style="font-weight:bold; width:300px;" i18n="@@Area_short">Area:</td>
+            <td *ngFor="let feature of topFeaturesToDisplay">{{feature.properties.Gesamtarea}} m²</td>
+          </tr>
+          <tr>
+            <td style="font-weight:bold; width:300px;" i18n="@@Scientific_short">Science:</td>
+            <td *ngFor="let feature of topFeaturesToDisplay">{{feature.properties.Scientific}}</td>
+          </tr>
+          <tr>
+            <td style="font-weight:bold; width:300px;" i18n="@@Gastronomy_short">Gastronomy:</td>
+            <td *ngFor="let feature of topFeaturesToDisplay">{{feature.properties.Gastro}}</td>
+          </tr>
+          <tr>
+            <td style="font-weight:bold; width:300px;" i18n="@@Fitness_short">Fitness:</td>
+            <td *ngFor="let feature of topFeaturesToDisplay">{{feature.properties.Fitness}}</td>
+          </tr>
+          <tr>
+            <td style="font-weight:bold; width:300px;" i18n="@@Cultural_short">Culture:</td>
+            <td *ngFor="let feature of topFeaturesToDisplay">{{feature.properties.Kultur}}</td>
+          </tr>
+          <tr>
+            <td style="font-weight:bold; width:300px;" i18n="@@Greenspace_short">Greenspace:</td>
+            <td *ngFor="let feature of topFeaturesToDisplay">{{feature.properties.Park_m2}} m²</td>
+          </tr>
+          <tr>
+            <td style="font-weight:bold; width:300px;" i18n="@@Transit_short">Nearest transit:</td>
+            <td *ngFor="let feature of topFeaturesToDisplay">{{feature.properties.Bahn}} {{feature.properties.Bahn_m}} m / {{feature.properties.Bahn_min}} min <span i18n>(foot)</span></td>
+          </tr>
+          <tr>
+            <td style="font-weight:bold; width:300px;" i18n="@@Airport_short">Airport:</td>
+            <td *ngFor="let feature of topFeaturesToDisplay">{{feature.properties.AIR_km}} km / {{feature.properties.AIR_OEV}} min <span i18n>(public transport)</span></td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <div id="step5" *ngIf="progress === 5">
+      <div class="header">
+        <h1 i18n>Algorithmic choice</h1>
+        <div class="progress-field selected">5</div>
+      </div>
+      <div class="row">
+        <app-radar-chart [className]="'radar-chart-step5'" [chartDatas]="[targetChartData, selectedFeatureChartData]" [chartOptions]="radarChartOptions"></app-radar-chart>
+        <div class="infotable" id="infotable5">
+          <table *ngIf="selectedFeature">
+            <tr><td><b>{{selectedFeature.properties.Adresse}}</b></td></tr>
+            <tr><td><img [src]="'./assets/' + selectedFeature.id + '.JPG'" class="infoimage" /></td></tr>
+            <tr><td><b i18n="@@Area_long">Area:</b> {{selectedFeature.properties.Gesamtarea}} m²</td><tr>
+            <tr><td><b i18n="@@Scientific_long">Scientific institutions within 3 km radius:</b> {{selectedFeature.properties.Scientific}}</td><tr>
+            <tr><td><b i18n="@@Hotels_long">Hotels within 1 km radius:</b> {{selectedFeature.properties.Hotels1km}}</td></tr>
+            <tr><td><b i18n="@@Gastronomy_long">Gastronomic establishments within 500 m radius:</b> {{selectedFeature.properties.Gastro}}</td></tr>
+            <tr><td><b i18n="@@Fitness_long">Fitness and wellness offers within 500 m radius:</b> {{selectedFeature.properties.Fitness}}</td></tr>
+            <tr><td><b i18n="@@Cultural_long">Cultural institutions within 3 km radius:</b> {{selectedFeature.properties.Kultur}}</td></tr>
+            <tr><td><b i18n="@@Greenspace_long">Greenspace and parks within 500 m radius:</b> {{selectedFeature.properties.Park_m2}} m²</td></tr>
+            <tr><td><b i18n="@@Transit_long">Nearest transit stop:</b> {{selectedFeature.properties.Bahn}} {{selectedFeature.properties.Bahn_m}} m / {{selectedFeature.properties.Bahn_min}} min <span i18n>by foot</span></td></tr>
+            <tr><td><b i18n="@@Airport_long">Distance to airport:</b> {{selectedFeature.properties.AIR_km}} km / {{selectedFeature.properties.AIR_OEV}} min <span i18n>by public transport</span></td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="logo">
+  <img src="./assets/HCU.logo.png" />
+</div>

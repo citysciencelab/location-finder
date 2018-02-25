@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+  <file source-language="de" datatype="plaintext" original="ng2.template">
+    <body>
+      <trans-unit id="3d32e8046dc6565947f4e33ed70a1ebcbf4d86d9" datatype="html">
+        <source>Looking for a Congress Hotel</source>
+        <target>Wir suchen ein Kongresshotel</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/infoscreen/infoscreen.component.ts</context>
+          <context context-type="linenumber">10</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="331416b27ff8920709969e428dec5b8bf336e75b" datatype="html">
+        <source>Conference room, seminar rooms, exhibition rooms, 1000 beds</source>
+        <target>Konferenzsaal, Seminarräume, Ausstellungsräume, 1000 Betten</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/infoscreen/infoscreen.component.ts</context>
+          <context context-type="linenumber">11</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="a030722acda3ef5aedd4515c859f4b8ab4125ba6" datatype="html">
+        <source>11 parcels have been preselected based on the following criteria:</source>
+        <target>11 Grundstücke wurden anhand der folgenden Grundvoraussetzungen ausgewählt:</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/infoscreen/infoscreen.component.ts</context>
+          <context context-type="linenumber">15</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="0e25742aa293bed7aff47ff31cd052230d6c0e02" datatype="html">
+        <source>20.000 m² floor space or more</source>
+        <target>mindestens 20.000 m² Nutzfläche</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/infoscreen/infoscreen.component.ts</context>
+          <context context-type="linenumber">17</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="f928b2f67bfb32d88309d7c6e982c931d31c0b8e" datatype="html">
+        <source>no more than 10 minutes away from the nearest transit stop</source>
+        <target>max. 10 Minuten zur nächsten U- oder S-Bahn</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/infoscreen/infoscreen.component.ts</context>
+          <context context-type="linenumber">18</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="9f4f89901845ca1b6581635e2cc0f97a84254e54" datatype="html">
+        <source>area undeveloped or easy to convert</source>
+        <target>Fläche unbebaut oder leicht umzubauen</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/infoscreen/infoscreen.component.ts</context>
+          <context context-type="linenumber">19</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6098cdc7bd02fe6eee113be6430cb4e8b6dacbfb" datatype="html">
+        <source>building permission given by law</source>
+        <target>entsprechendes Baurecht vorhanden</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/infoscreen/infoscreen.component.ts</context>
+          <context context-type="linenumber">20</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ff08441a8a9ff63d4d86c1283066e24bc9568878" datatype="html">
+        <source>Adjust criteria</source>
+        <target>Kriterien einstellen</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/infoscreen/infoscreen.component.ts</context>
+          <context context-type="linenumber">27</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="03a62a90acc39df803d1c7c398599c09c4a7a043" datatype="html">
+        <source>Inspect parcels</source>
+        <target>Grundstücke ansehen</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/infoscreen/infoscreen.component.ts</context>
+          <context context-type="linenumber">37</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="Area_long" datatype="html">
+        <source>Area:</source>
+        <target>Gesamtfläche:</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/infoscreen/infoscreen.component.ts</context>
+          <context context-type="linenumber">52</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/infoscreen/infoscreen.component.ts</context>
+          <context context-type="linenumber">136</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="Scientific_long" datatype="html">
+        <source>Scientific institutions within 3 km radius:</source>
+        <target>Wissenschaftliche Einrichtungen in 3 km Umkreis:</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/infoscreen/infoscreen.component.ts</context>
+          <context context-type="linenumber">53</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/infoscreen/infoscreen.component.ts</context>
+          <context context-type="linenumber">137</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="Hotels_long" datatype="html">
+        <source>Hotels within 1 km radius:</source>
+        <target>Hotels in 1 km Umkreis:</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/infoscreen/infoscreen.component.ts</context>
+          <context context-type="linenumber">54</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/infoscreen/infoscreen.component.ts</context>
+          <context context-type="linenumber">138</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="Gastronomy_long" datatype="html">
+        <source>Gastronomic establishments within 500 m radius:</source>
+        <target>Gastronomische Angebote in 500 m Umkreis:</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/infoscreen/infoscreen.component.ts</context>
+          <context context-type="linenumber">55</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/infoscreen/infoscreen.component.ts</context>
+          <context context-type="linenumber">139</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="Fitness_long" datatype="html">
+        <source>Fitness and wellness offers within 500 m radius:</source>
+        <target>Fitness- und Wellnessangebote in 500 m Umkreis:</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/infoscreen/infoscreen.component.ts</context>
+          <context context-type="linenumber">56</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/infoscreen/infoscreen.component.ts</context>
+          <context context-type="linenumber">140</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="Cultural_long" datatype="html">
+        <source>Cultural institutions within 3 km radius:</source>
+        <target>Kulturelle Angebote in 3 km Umkreis:</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/infoscreen/infoscreen.component.ts</context>
+          <context context-type="linenumber">57</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/infoscreen/infoscreen.component.ts</context>
+          <context context-type="linenumber">141</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="Greenspace_long" datatype="html">
+        <source>Greenspace and parks within 500 m radius:</source>
+        <target>Grünflächen und Parks in 500 m Umkreis:</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/infoscreen/infoscreen.component.ts</context>
+          <context context-type="linenumber">58</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/infoscreen/infoscreen.component.ts</context>
+          <context context-type="linenumber">142</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="Transit_long" datatype="html">
+        <source>Nearest transit stop:</source>
+        <target>Nächste U/S-Bahn-Station:</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/infoscreen/infoscreen.component.ts</context>
+          <context context-type="linenumber">59</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/infoscreen/infoscreen.component.ts</context>
+          <context context-type="linenumber">143</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="0685041eda236f011bcebfda1ff4e403f17bee21" datatype="html">
+        <source>by foot</source>
+        <target>zu Fuß</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/infoscreen/infoscreen.component.ts</context>
+          <context context-type="linenumber">59</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/infoscreen/infoscreen.component.ts</context>
+          <context context-type="linenumber">143</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="Airport_long" datatype="html">
+        <source>Distance to airport:</source>
+        <target>Entfernung Flughafen:</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/infoscreen/infoscreen.component.ts</context>
+          <context context-type="linenumber">60</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/infoscreen/infoscreen.component.ts</context>
+          <context context-type="linenumber">144</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="15600422ac2819cc0b27033630088653452e81ea" datatype="html">
+        <source>by public transport</source>
+        <target>mit ÖPNV</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/infoscreen/infoscreen.component.ts</context>
+          <context context-type="linenumber">60</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/infoscreen/infoscreen.component.ts</context>
+          <context context-type="linenumber">144</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="29368e80564197f679b5fc10b2875d35be6a1714" datatype="html">
+        <source>Compare parcels</source>
+        <target>Grundstücke vergleichen</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/infoscreen/infoscreen.component.ts</context>
+          <context context-type="linenumber">68</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="Address_short" datatype="html">
+        <source>Address:</source>
+        <target>Adresse:</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/infoscreen/infoscreen.component.ts</context>
+          <context context-type="linenumber">86</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="Area_short" datatype="html">
+        <source>Area:</source>
+        <target>Fläche:</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/infoscreen/infoscreen.component.ts</context>
+          <context context-type="linenumber">90</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="Scientific_short" datatype="html">
+        <source>Science:</source>
+        <target>Wissenschaft:</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/infoscreen/infoscreen.component.ts</context>
+          <context context-type="linenumber">94</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="Gastronomy_short" datatype="html">
+        <source>Gastronomy:</source>
+        <target>Gastronomie:</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/infoscreen/infoscreen.component.ts</context>
+          <context context-type="linenumber">98</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="Fitness_short" datatype="html">
+        <source>Fitness:</source>
+        <target>Fitness:</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/infoscreen/infoscreen.component.ts</context>
+          <context context-type="linenumber">102</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="Cultural_short" datatype="html">
+        <source>Culture:</source>
+        <target>Kultur:</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/infoscreen/infoscreen.component.ts</context>
+          <context context-type="linenumber">106</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="Greenspace_short" datatype="html">
+        <source>Greenspace:</source>
+        <target>Grünfläche:</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/infoscreen/infoscreen.component.ts</context>
+          <context context-type="linenumber">110</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="Transit_short" datatype="html">
+        <source>Nearest transit:</source>
+        <target>Nächste U/S-Bahn:</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/infoscreen/infoscreen.component.ts</context>
+          <context context-type="linenumber">114</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="73dea4b964d1a97ef53af3c8e1ec85c3fa0cddef" datatype="html">
+        <source>(foot)</source>
+        <target>(zu Fuß)</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/infoscreen/infoscreen.component.ts</context>
+          <context context-type="linenumber">115</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="Airport_short" datatype="html">
+        <source>Airport:</source>
+        <target>Flughafen:</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/infoscreen/infoscreen.component.ts</context>
+          <context context-type="linenumber">118</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="578dfb9cc81d71827f4cecb78b8a183dda6c44c8" datatype="html">
+        <source>(public transport)</source>
+        <target>(ÖPNV)</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/infoscreen/infoscreen.component.ts</context>
+          <context context-type="linenumber">119</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ade811c578886bdf4c8e6515661bb4d16d5d4662" datatype="html">
+        <source>Algorithmic choice</source>
+        <target>Algorithmische Auswahl</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/infoscreen/infoscreen.component.ts</context>
+          <context context-type="linenumber">127</context>
+        </context-group>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

@@ -1,0 +1,48 @@
+{
+  "progressMarkerID": 0,
+  "selectionMarkerID": 1,
+  "searchCriteria": [
+    {
+      "key": "Park_m2",
+      "name_en-US": "Greenspace (m²)",
+      "name_de-DE": "Grünfläche (m²)",
+      "markerID": 2,
+      "color": "0, 203, 0"
+    },
+    {
+      "key": "Fitness",
+      "name_en-US": "Fitness amenities",
+      "name_de-DE": "Fitnessangebot",
+      "markerID": 3,
+      "color": "253, 136, 1"
+    },
+    {
+      "key": "Gastro",
+      "name_en-US": "Gastronomy",
+      "name_de-DE": "Gastronomie",
+      "markerID": 4,
+      "color": "253, 0, 0"
+    },
+    {
+      "key": "Kultur",
+      "name_en-US": "Cultural institutions",
+      "name_de-DE": "Kulturelle Einrichtungen",
+      "markerID": 5,
+      "color": "64, 0, 149"
+    },
+    {
+      "key": "Scientific",
+      "name_en-US": "Scientific institutions",
+      "name_de-DE": "Wissenschaftl. Einrichtungen",
+      "markerID": 6,
+      "color": "0, 92, 213"
+    },
+    {
+      "key": "AIR_OEV",
+      "name_en-US": "Travel time to airport (min)",
+      "name_de-DE": "Reisezeit zum Flughafen (min)",
+      "markerID": 7,
+      "color": "239, 231, 1"
+    }
+  ]
+}

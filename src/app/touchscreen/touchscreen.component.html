@@ -1,0 +1,13 @@
+<div class="container" (addobject)="onUpdateObject($event)" (updateobject)="onUpdateObject($event)" (removeobject)="onRemoveObject($event)">
+  <div class="welcome-screen" *ngIf="!currentStep">
+    <img src="./assets/LocationFinderLogo.png" />
+  </div>
+
+  <app-map *ngIf="currentStepHasMap"></app-map>
+
+  <app-canvas *ngIf="currentStepHasCanvas" [targetCriteria]="targetCriteria" [activeMarkers]="activeMarkers"></app-canvas>
+
+  <nav class="progress-slider">
+    <div *ngFor="let step of steps" [attr.id]="'step' + step" class="progress-field" [class.selected]="step === currentStep" (click)="setStep(step)" (addobject)="onUpdateObject($event)" (updateobject)="onUpdateObject($event)">{{ step }}</div>
+  </nav>
+</div>

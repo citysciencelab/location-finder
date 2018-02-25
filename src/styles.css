@@ -1,0 +1,284 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font: 13px Helvetica, Arial;
+  overflow: hidden;
+}
+
+html,
+body {
+  height: 100%;
+  width: 100%;
+}
+
+/* Touch screen */
+
+.welcome-screen,
+.main-container {
+  height: 100%;
+  width: calc(100% - 140px);
+  position: relative;
+}
+
+.welcome-screen img {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+#map {
+  height: 100%;
+  width: 100%;
+}
+
+#tuioCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  pointer-events: none;
+  transition: background-color 0.5s;
+}
+
+.opaque {
+  background-color: white;
+}
+
+.progress-slider {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: space-around;
+  height: 100%;
+  background-color: white;
+  opacity: 0.75;
+}
+
+.progress-field {
+  background-color: gray;
+  margin: 15px;
+  width: 110px;
+  height: 110px;
+  line-height: 110px;
+  font-size: 50px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.progress-field.selected {
+  background-color: rgb(0, 152, 152);
+}
+
+/* Info screen */
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  background-color: white;
+  margin-bottom: 20px;
+}
+
+.header h1 {
+  margin: auto 0;
+}
+
+.header .progress-field {
+  margin: 0;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+#introtextheader {
+  width: 85%;
+  padding-top: 40px;
+  padding-bottom: 50px;
+  margin-top: 40px;
+  margin-left: 120px;
+  background: url("assets/LocationFinderLogoLupe.png")no-repeat bottom right;
+  background-size: contain;
+}
+
+#introtextheader p {
+  font-size: 80px;
+  font-weight: bold;
+  width: 80%;
+}
+
+#introtextheader .subheader {
+  font-weight: normal;
+  font-size: 35px;
+  height: 70%;
+  width: 80%;
+  margin-top: 10px;
+}
+
+#kongress {
+  width: 33%;
+  float: left;
+}
+
+#introtext {
+  margin-top: 40px;
+  margin-left: 120px;
+}
+
+#introtext p {
+  font-size: 40px;
+  height: 70%;
+  width: 50%;
+  margin-top: 50px;
+  margin-left: 100px;
+  float: left;
+}
+
+#introtext ul {
+  font-size: 40px;
+  font-weight: bold;
+  padding: 35px;
+  margin-left: 100px;
+  line-height: 1.3;
+  float: left;
+}
+
+#info {
+  font-size: 24px;
+  padding: 20px;
+}
+
+.img {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.metalock {
+  position: absolute;
+  top: 25px;
+  right: 131px;
+}
+
+#lock_open {
+  position: absolute;
+  height: 100px;
+}
+
+#lock_closed {
+  position: absolute;
+  height: 100px;
+}
+
+.lock {
+  position: relative;
+  height: 80%;
+}
+
+.hidden {
+  visibility: hidden;
+}
+
+.visible {
+  visibility: visible;
+}
+
+.infotable {
+  font-size: 24px;
+  width: 40%;
+  height: 100%;
+  float: left;
+  padding: 1%;
+  position: relative;
+}
+
+.infoimage {
+  width: 500px;
+}
+
+#step4 .infoimage {
+  width: 300px;
+}
+
+.thumb {
+  width: 20%;
+}
+
+.infocolumn {
+  float: left;
+}
+
+th,
+td {
+  /*padding: 5px 15px;*/
+  text-align: left;
+}
+
+.radar-chart {
+  width: 800px;
+  height: 640px;
+  padding: 20px 140px 20px 60px;
+}
+
+.radar-chart .level {
+  stroke: gray;
+}
+
+.radar-chart .axis {
+  text-anchor: middle;
+}
+
+.radar-chart .axis line {
+  stroke: gray;
+}
+
+.radar-chart .area {
+  fill-opacity: 0.6;
+}
+
+.radar-chart .tooltip {
+  display: none;
+}
+
+#infotable-compare .radar-chart {
+  width: 240px;
+  height: 240px;
+  padding: 20px;
+}
+
+#infotable-compare .radar-chart .legend {
+  display: none;
+}
+
+.locked {
+  border-style: solid;
+  border-radius: 25px;
+  border-color: rgb(0, 152, 152);
+}
+
+p {
+  padding: 1px 0px;
+  font-size: 30px;
+  font-weight: bold;
+}
+
+#logo {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  background-color: white;
+  border: 10px solid white;
+}
+
+#logo img {
+  height: 100px;
+}
