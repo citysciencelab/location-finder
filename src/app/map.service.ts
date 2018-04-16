@@ -143,13 +143,13 @@ export class MapService {
   }
 
   private registerSingleClickListener() {
-    this.instance.on('singleclick', e => {
+    this.instance.on('singleclick', (e: ol.MapBrowserEvent) => {
       this.onSelectMapFeature(e.coordinate);
     });
   }
 
   private registerDoubleClickListener() {
-    this.instance.on('dblclick', e => {
+    this.instance.on('dblclick', (e: ol.MapBrowserEvent) => {
       const selectedFeature = this.getFeatureAtCoordinate(e.coordinate);
       if (selectedFeature) {
         const alreadyLocked = this.topFeatures.find(item => {
@@ -189,7 +189,7 @@ export class MapService {
   }
 
   private registerSiteSourceAddFeatureListener() {
-    this.siteSource.on('addfeature', e => {
+    this.siteSource.on('addfeature', (e: ol.source.VectorEvent) => {
       const getFeatures = this.siteSource.getFeatures();
       const properties = e.feature.getProperties();
 
@@ -209,7 +209,7 @@ export class MapService {
   }
 
   private registerSiteHighlightSourceAddFeatureListener() {
-    this.siteHighlightSource.on('addfeature', e => {
+    this.siteHighlightSource.on('addfeature', (e: ol.source.VectorEvent) => {
       // Remove the underlying feature and re-add all others to siteSource
       const featureById = this.siteSource.getFeatureById(e.feature.getId());
       if (featureById) {
@@ -233,7 +233,7 @@ export class MapService {
   }
 
   private registerSiteLockedAddFeatureListener() {
-    this.siteLockedSource.on('addfeature', e => {
+    this.siteLockedSource.on('addfeature', (e: ol.source.VectorEvent) => {
       const featureById = this.siteHighlightSource.getFeatureById(e.feature.getId());
       if (featureById) {
         this.siteHighlightSource.removeFeature(featureById);
@@ -242,7 +242,7 @@ export class MapService {
   }
 
   private registerSiteLockedRemoveFeatureListener() {
-    this.siteLockedSource.on('removefeature', e => {
+    this.siteLockedSource.on('removefeature', (e: ol.source.VectorEvent) => {
       this.siteHighlightSource.addFeature(e.feature);
     });
   }
