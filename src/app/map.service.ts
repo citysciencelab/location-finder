@@ -28,6 +28,10 @@ export class MapService {
     this.setSources();
     this.instance = new ol.Map({
       controls: ol.control.defaults().extend([new ol.control.ScaleLine()]),
+      interactions: ol.interaction.defaults({
+        altShiftDragRotate: false,
+        pinchRotate: false
+      }),
       layers: this.getLayers(),
       view: new ol.View({
         center: ol.proj.fromLonLat([9.99, 53.55]),
