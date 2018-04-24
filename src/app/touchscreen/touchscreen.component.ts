@@ -1,8 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { NavigationStart, Router } from '@angular/router';
+import { TuioClient } from 'tuio-client';
+import { environment } from '../../environments/environment';
 import { ConfigurationService } from '../configuration.service';
 import { LocalStorageService } from '../local-storage.service';
-import { TuioService } from '../tuio/tuio.service';
 import { MapService } from '../map.service';
 import { RadarChartData } from '../infoscreen/radar-chart/radar-chart-data.model';
 import { MarkerType } from '../marker-type.enum';
@@ -25,7 +26,7 @@ export class TouchscreenComponent implements OnInit {
   private computerBleeped = false;
   @ViewChild(CanvasComponent) private canvas: CanvasComponent;
 
-  constructor(private config: ConfigurationService, private localStorageService: LocalStorageService, private tuioService: TuioService,
+  constructor(private config: ConfigurationService, private localStorageService: LocalStorageService, private tuioClient: TuioClient,
     private mapService: MapService) {
     this.targetCriteria = new RadarChartData(
       'target-values',
@@ -34,7 +35,7 @@ export class TouchscreenComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.tuioService.connect();
+    this.tuioClient.connect(environment.socketUrl);
   }
 
   setStep(step: number) {
