@@ -4,7 +4,7 @@ import { TouchscreenComponent } from './touchscreen/touchscreen.component';
 import { InfoscreenComponent } from './infoscreen/infoscreen.component';
 
 const routes: Routes = [
-  { path: 'touchscreen', component: TouchscreenComponent},
+  { path: '', component: TouchscreenComponent},
   { path: 'infoscreen', component: InfoscreenComponent}
 ];
 
