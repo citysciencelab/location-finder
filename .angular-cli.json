@@ -21,9 +21,7 @@
       "styles": [
         "styles.css"
       ],
-      "scripts": [
-        "../node_modules/d3/d3.js"
-      ],
+      "scripts": [],
       "environmentSource": "environments/environment.ts",
       "environments": {
         "dev": "environments/environment.ts",

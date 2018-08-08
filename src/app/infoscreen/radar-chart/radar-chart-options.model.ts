@@ -12,7 +12,7 @@ export interface RadarChartOptions {
   maxValue?: number;
   minValue?: number;
   radians?: number;
-  color?: d3.scale.Ordinal<string, string>;
+  // color?: d3.scale.Ordinal<string, string>;
   axisLine?: boolean;
   axisText?: boolean;
   circles?: boolean;
