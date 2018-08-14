@@ -64,3 +64,7 @@ import 'zone.js/dist/zone';  // Included with Angular CLI.
 /***************************************************************************************************
  * APPLICATION IMPORTS
  */
+
+
+// https://stackoverflow.com/questions/49966827/global-is-not-defined-while-using-socket-io-client-with-webpack
+(window as any).global = window;
