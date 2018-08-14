@@ -28,9 +28,11 @@ export class CanvasComponent implements AfterViewInit, OnChanges {
 
   ngAfterViewInit() {
     this.refresh();
+    // setInterval(() => this.draw(this.targetCriteria), 100);
   }
 
   refresh() {
+    // console.log('refresh');
     // Dynamically size the canvas so it matches the main-container div
     if (!this.mainContainerRef) {
       return;

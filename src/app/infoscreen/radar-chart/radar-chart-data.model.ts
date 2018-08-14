@@ -1,4 +1,3 @@
-import { ConfigurationService } from '../../configuration.service';
 import { RadarChartAxis } from './radar-chart-axis.model';
 
 export class RadarChartData {

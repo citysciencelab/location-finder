@@ -28,7 +28,7 @@
         <div class="progress-field selected">2</div>
       </div>
       <div class="row">
-        <app-radar-chart [className]="'radar-chart-step2'" [chartDatas]="[targetChartData]" [chartOptions]="radarChartOptions"></app-radar-chart>
+        <app-radar-chart [chartDatas]="[targetChartData]"></app-radar-chart>
       </div>
     </div>
 
@@ -38,7 +38,7 @@
         <div class="progress-field selected">3</div>
       </div>
       <div class="row">
-        <app-radar-chart [className]="'radar-chart-step3'" [chartDatas]="[targetChartData, selectedFeatureChartData]" [chartOptions]="radarChartOptions"></app-radar-chart>
+        <app-radar-chart [chartDatas]="[selectedFeatureChartData, targetChartData]"></app-radar-chart>
         <div class="infotable" id="infotable3">
           <div class="metalock" *ngIf="selectedFeature">
             <div class="lock">
@@ -79,7 +79,7 @@
           <tr>
             <td></td>
             <td *ngFor="let feature of topFeaturesToDisplay; let i = index">
-              <app-radar-chart [className]="'radar-chart-step4-' + i" [chartDatas]="[targetChartData, topFeaturesChartDatas[i]]" [chartOptions]="radarChartOptionsCompare"></app-radar-chart>
+              <app-radar-chart [chartDatas]="[topFeaturesChartDatas[i], targetChartData]"></app-radar-chart>
             </td>
           </tr>
           <tr>
@@ -128,7 +128,7 @@
         <div class="progress-field selected">5</div>
       </div>
       <div class="row">
-        <app-radar-chart [className]="'radar-chart-step5'" [chartDatas]="[targetChartData, selectedFeatureChartData]" [chartOptions]="radarChartOptions"></app-radar-chart>
+        <app-radar-chart [chartDatas]="[selectedFeatureChartData, targetChartData]"></app-radar-chart>
         <div class="infotable" id="infotable5">
           <table *ngIf="selectedFeature">
             <tr><td><b>{{selectedFeature.properties.Adresse}}</b></td></tr>
