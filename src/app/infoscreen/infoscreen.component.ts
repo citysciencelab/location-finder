@@ -1,9 +1,14 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
 import { Feature } from '../feature.model';
-import { RadarChartComponent } from './radar-chart/radar-chart.component';
 import { RadarChartData } from './radar-chart/radar-chart-data.model';
-import { RadarChartOptions } from './radar-chart/radar-chart-options.model';
 import { LocalStorageMessage } from '../local-storage-message.model';
+
+// This declaration extends the chart.js type definitions (which are inaccurate)
+declare module 'chart.js' {
+  interface PointLabelOptions {
+    display?: boolean;
+  }
+}
 
 @Component({
   selector: 'app-infoscreen',
@@ -18,21 +23,28 @@ export class InfoscreenComponent {
   topFeaturesToDisplay: Feature[] = [];
   topFeaturesChartDatas: RadarChartData[] = [];
   targetChartData: RadarChartData;
-  radarChartOptions: RadarChartOptions = {
-    w: 600,
-    h: 600,
-    levels: 5,
-    maxValue: 1,
-    minValue: 0
+  comparisonChartOptions: Chart.ChartOptions = {
+    legend: {
+      display: false
+    },
+    animation: {
+      duration: 0
+    },
+    scale: {
+      ticks: {
+        max: 1,
+        min: 0,
+        display: false
+      },
+      gridLines: {
+        color: '#aaa',
+        lineWidth: 1
+      },
+      pointLabels: {
+        display: false
+      }
+    }
   };
-  radarChartOptionsCompare: RadarChartOptions = {
-    w: 200,
-    h: 200,
-    levels: 5,
-    maxValue: 1,
-    minValue: 0
-  };
-  @ViewChild(RadarChartComponent) radarChart: RadarChartComponent;
 
   constructor() { }
 
@@ -81,6 +93,7 @@ export class InfoscreenComponent {
         }
         this.selectedFeature = message.feature;
         this.selectedFeatureChartData = message.chartData;
+        // TODO mapService.zoomToFeature()
         break;
     }
   }

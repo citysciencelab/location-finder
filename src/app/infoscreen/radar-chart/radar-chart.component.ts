@@ -24,36 +24,44 @@ export class RadarChartComponent implements OnInit, OnChanges {
   private chart: Chart;
 
   @Input() private chartDatas: RadarChartData[] = [];
+  @Input() private chartOptions: Chart.ChartOptions;
 
   constructor(@Inject(LOCALE_ID) private locale, private config: ConfigurationService) { }
 
   ngOnInit() {
     this.ctx = this.canvasRef.nativeElement.getContext('2d');
 
+    // Default options - can be overridden by input
+    const options = this.chartOptions ? this.chartOptions : {
+      legend: {
+        display: false
+      },
+      animation: {
+        duration: 0
+      },
+      scale: {
+        ticks: {
+          max: 1,
+          min: 0,
+          display: false
+        },
+        gridLines: {
+          color: '#aaa',
+          lineWidth: 1
+        },
+        pointLabels: {
+          fontSize: 18
+        }
+      }
+    };
+
     this.chart = new Chart(this.ctx, {
       type: 'radar',
       data: {
         labels: this.config.searchCriteria.map(criterion => criterion['name_' + this.locale]),
-        datasets: []
+        datasets: this.getDatasets()
       },
-      options: {
-        legend: {
-          display: false
-        },
-        animation: {
-          duration: 0
-        },
-        scale: {
-          ticks: {
-            max: 1,
-            min: 0,
-            display: false
-          },
-          pointLabels: {
-            fontSize: 18
-          }
-        }
-      }
+      options: options
     });
   }
 
@@ -62,7 +70,12 @@ export class RadarChartComponent implements OnInit, OnChanges {
       return;
     }
 
-    this.chart.data.datasets = this.chartDatas.map(chartData => {
+    this.chart.data.datasets = this.getDatasets();
+    this.chart.update();
+  }
+
+  getDatasets() {
+    return this.chartDatas.map(chartData => {
       if (!chartData) {
         return {};
       }
@@ -73,14 +86,13 @@ export class RadarChartComponent implements OnInit, OnChanges {
         borderColor: this.getBorderColor(chartData)
       };
     });
-    this.chart.update();
   }
 
   getBackgroundColor(chartData: RadarChartData) {
     return chartData.className === 'target-values' ? 'rgba(31, 119, 180, 0.6)' : 'rgba(255, 127, 14, 0.6)';
   }
 
-  getBorderColor(chartData) {
+  getBorderColor(chartData: RadarChartData) {
     return chartData.className === 'target-values' ? 'rgba(31, 119, 180, 1)' : 'rgba(255, 127, 14, 1)';
   }
 }

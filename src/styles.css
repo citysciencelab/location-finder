@@ -133,10 +133,10 @@ body {
 #introtext {
   margin-top: 40px;
   margin-left: 120px;
+    font-size: 32px;
 }
 
 #introtext p {
-  font-size: 40px;
   height: 70%;
   width: 50%;
   margin-top: 50px;
@@ -145,7 +145,6 @@ body {
 }
 
 #introtext ul {
-  font-size: 40px;
   font-weight: bold;
   padding: 35px;
   margin-left: 100px;
@@ -219,44 +218,22 @@ body {
 
 th,
 td {
-  /*padding: 5px 15px;*/
   text-align: left;
 }
 
-.radar-chart {
-  width: 800px;
-  height: 640px;
-  padding: 20px 140px 20px 60px;
+#step2 app-radar-chart {
+  width: 1400px;
 }
 
-.radar-chart .level {
-  stroke: gray;
+#step3 app-radar-chart,
+#step5 app-radar-chart {
+  width: 1000px;
 }
 
-.radar-chart .axis {
-  text-anchor: middle;
-}
-
-.radar-chart .axis line {
-  stroke: gray;
-}
-
-.radar-chart .area {
-  fill-opacity: 0.6;
-}
-
-.radar-chart .tooltip {
-  display: none;
-}
-
-#infotable-compare .radar-chart {
-  width: 240px;
-  height: 240px;
-  padding: 20px;
-}
-
-#infotable-compare .radar-chart .legend {
-  display: none;
+#step4 app-radar-chart {
+  display: block;
+  width: 400px;
+  margin: 10px 0;
 }
 
 .locked {

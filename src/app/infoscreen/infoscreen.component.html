@@ -38,15 +38,15 @@
         <div class="progress-field selected">3</div>
       </div>
       <div class="row">
-        <app-radar-chart [chartDatas]="[selectedFeatureChartData, targetChartData]"></app-radar-chart>
-        <div class="infotable" id="infotable3">
-          <div class="metalock" *ngIf="selectedFeature">
+        <app-radar-chart [chartDatas]="[selectedFeatureChartData, targetChartData]" [style.visibility]="selectedFeature ? 'visible' : 'hidden'"></app-radar-chart>
+        <div class="infotable" id="infotable3" *ngIf="selectedFeature">
+          <div class="metalock">
             <div class="lock">
               <img *ngIf="!isSelectedFeatureLocked()" id="lock_open" src="./assets/lock_open.png" />
               <img *ngIf="isSelectedFeatureLocked()" id="lock_closed" src="./assets/lock_closed.png" />
             </div>
           </div>
-          <table *ngIf="selectedFeature">
+          <table>
             <tr><td><b>{{selectedFeature.properties.Adresse}}</b></td></tr>
             <tr><td><img [src]="'./assets/' + selectedFeature.id + '.JPG'" class="infoimage" /></td></tr>
             <tr><td><b i18n="@@Area_long">Area:</b> {{selectedFeature.properties.Gesamtarea}} m²</td><tr>
@@ -79,7 +79,7 @@
           <tr>
             <td></td>
             <td *ngFor="let feature of topFeaturesToDisplay; let i = index">
-              <app-radar-chart [chartDatas]="[topFeaturesChartDatas[i], targetChartData]"></app-radar-chart>
+              <app-radar-chart [chartDatas]="[topFeaturesChartDatas[i], targetChartData]" [chartOptions]="comparisonChartOptions"></app-radar-chart>
             </td>
           </tr>
           <tr>
