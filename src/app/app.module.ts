@@ -25,7 +25,11 @@ import { LocalStorageService } from './local-storage.service';
     ConfigurationService,
     LocalStorageService,
     MapService,
-    TuioClient
+    {
+      provide: TuioClient,
+      useFactory: (config: ConfigurationService) => new TuioClient({ enableCursorEvent: config.tuioCursorEvents }),
+      deps: [ConfigurationService]
+    }
   ],
   bootstrap: [AppComponent]
 })

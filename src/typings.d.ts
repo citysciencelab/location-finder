@@ -16,6 +16,7 @@ declare interface Config {
   progressMarkerID: number;
   selectionMarkerID: number;
   searchCriteria: SearchCriterion[];
+  tuioCursorEvents?: boolean;
 }
 
 declare module '*.json' {
