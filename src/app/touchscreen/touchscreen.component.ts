@@ -50,6 +50,7 @@ export class TouchscreenComponent implements OnInit {
     if (step === 5 && !this.computerBleeped) {
       const winnerFeature = this.computerSagt();
       this.computerBleeped = true;
+      this.mapService.zoomTo(winnerFeature);
       this.localStorageService.sendComputerSagt(
         this.mapService.featureToJSON(winnerFeature),
         this.featureToRadarChartData(winnerFeature)

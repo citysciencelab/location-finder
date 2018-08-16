@@ -93,7 +93,6 @@ export class InfoscreenComponent {
         }
         this.selectedFeature = message.feature;
         this.selectedFeatureChartData = message.chartData;
-        // TODO mapService.zoomToFeature()
         break;
     }
   }

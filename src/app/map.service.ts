@@ -49,6 +49,14 @@ export class MapService {
     }
   }
 
+  zoomTo(feature: ol.Feature) {
+    this.instance.getView().animate(
+      { zoom: 13 },
+      { center: ol.extent.getCenter(feature.getGeometry().getExtent()) },
+      { zoom: 17 }
+    );
+  }
+
   setTarget(target: string) {
     this.instance.setTarget(target);
   }
