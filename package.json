@@ -6,7 +6,7 @@
     "ng": "ng",
     "start": "ng serve --aot --host 0.0.0.0",
     "build": "ng build --prod --output-path dist/en",
-    "build-de": "ng build --prod --locale de-DE --i18nFile src/locale/messages.de-DE.xlf --output-path dist/de",
+    "build-de": "ng build --prod --i18n-locale de-DE --i18n-file src/locale/messages.de-DE.xlf --output-path dist/de",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
