@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Feature } from './feature.model';
-import { RadarChartData } from './infoscreen/radar-chart/radar-chart-data.model';
+import { Feature } from '../feature.model';
+import { RadarChartData } from '../radar-chart/radar-chart-data.model';
 import { LocalStorageMessage } from './local-storage-message.model';
 
 @Injectable()

@@ -1,5 +1,5 @@
-import { Feature } from './feature.model';
-import { RadarChartData } from './infoscreen/radar-chart/radar-chart-data.model';
+import { Feature } from '../feature.model';
+import { RadarChartData } from '../radar-chart/radar-chart-data.model';
 
 export interface LocalStorageMessage {
   type: string;

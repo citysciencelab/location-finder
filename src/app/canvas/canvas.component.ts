@@ -1,8 +1,8 @@
 import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, Input, OnChanges, ViewChild,
   Inject, LOCALE_ID } from '@angular/core';
-import { ConfigurationService } from '../../configuration.service';
-import { RadarChartData } from '../../infoscreen/radar-chart/radar-chart-data.model';
-import { MapService } from '../../map.service';
+import { ConfigurationService } from '../configuration.service';
+import { RadarChartData } from '../radar-chart/radar-chart-data.model';
+import { MapService } from '../map/map.service';
 
 @Component({
   selector: 'app-canvas',

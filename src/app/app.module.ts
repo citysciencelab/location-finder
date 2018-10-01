@@ -4,21 +4,27 @@ import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { TuioClient } from 'tuio-client';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
-import { TouchscreenModule } from './touchscreen/touchscreen.module';
-import { InfoscreenModule } from './infoscreen/infoscreen.module';
+import { TouchscreenComponent } from './touchscreen/touchscreen.component';
+import { CanvasComponent } from './canvas/canvas.component';
+import { MapComponent } from './map/map.component';
+import { InfoscreenComponent } from './infoscreen/infoscreen.component';
+import { RadarChartComponent } from './radar-chart/radar-chart.component';
 import { ConfigurationService } from './configuration.service';
-import { MapService } from './map.service';
-import { LocalStorageService } from './local-storage.service';
+import { MapService } from './map/map.service';
+import { LocalStorageService } from './local-storage/local-storage.service';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    InfoscreenComponent,
+    RadarChartComponent,
+    TouchscreenComponent,
+    CanvasComponent,
+    MapComponent
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule,
-    TouchscreenModule,
-    InfoscreenModule
+    AppRoutingModule
   ],
   providers: [
     { provide: LocationStrategy, useClass: HashLocationStrategy },

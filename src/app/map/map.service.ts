@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import * as ol from 'openlayers';
-import { environment } from '../environments/environment';
-import { ConfigurationService } from './configuration.service';
-import { LocalStorageService } from './local-storage.service';
-import { Feature } from './feature.model';
-import { RadarChartData } from './infoscreen/radar-chart/radar-chart-data.model';
+import { environment } from '../../environments/environment';
+import { ConfigurationService } from '../configuration.service';
+import { LocalStorageService } from '../local-storage/local-storage.service';
+import { Feature } from '../feature.model';
+import { RadarChartData } from '../radar-chart/radar-chart-data.model';
 
 @Injectable()
 export class MapService {

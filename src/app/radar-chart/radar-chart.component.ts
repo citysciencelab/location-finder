@@ -1,6 +1,6 @@
 import { Component, ElementRef, Input, OnInit, OnChanges, Inject, LOCALE_ID, ViewChild } from '@angular/core';
 import * as Chart from 'chart.js';
-import { ConfigurationService } from '../../configuration.service';
+import { ConfigurationService } from '../configuration.service';
 import { RadarChartData } from './radar-chart-data.model';
 
 // This declaration extends the chart.js type definitions (which are inaccurate)

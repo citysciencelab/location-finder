@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Feature } from '../feature.model';
-import { RadarChartData } from './radar-chart/radar-chart-data.model';
-import { LocalStorageMessage } from '../local-storage-message.model';
+import { RadarChartData } from '../radar-chart/radar-chart-data.model';
+import { LocalStorageMessage } from '../local-storage/local-storage-message.model';
 
 // This declaration extends the chart.js type definitions (which are inaccurate)
 declare module 'chart.js' {

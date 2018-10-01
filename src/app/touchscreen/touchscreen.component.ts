@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { TuioClient } from 'tuio-client';
 import { environment } from '../../environments/environment';
 import { ConfigurationService } from '../configuration.service';
-import { LocalStorageService } from '../local-storage.service';
-import { MapService } from '../map.service';
-import { RadarChartData } from '../infoscreen/radar-chart/radar-chart-data.model';
+import { LocalStorageService } from '../local-storage/local-storage.service';
+import { MapService } from '../map/map.service';
+import { RadarChartData } from '../radar-chart/radar-chart-data.model';
 import { MarkerType } from '../marker-type.enum';
 
 @Component({
