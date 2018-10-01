@@ -1,5 +1,4 @@
 {
-  "tuioCursorEvents": false,
   "progressMarkerID": 0,
   "selectionMarkerID": 30,
   "searchCriteria": [
@@ -45,5 +44,6 @@
       "markerID": 6,
       "color": "239, 231, 1"
     }
-  ]
+  ],
+  "tuioCursorEvents": false
 }

@@ -44,5 +44,6 @@
       "markerID": 25,
       "color": "239, 231, 1"
     }
-  ]
+  ],
+  "tuioCursorEvents": true
 }
