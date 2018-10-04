@@ -12,6 +12,7 @@ import { RadarChartComponent } from './radar-chart/radar-chart.component';
 import { ConfigurationService } from './configuration.service';
 import { MapService } from './map/map.service';
 import { LocalStorageService } from './local-storage/local-storage.service';
+import { AnalysisService } from './analysis.service';
 
 @NgModule({
   declarations: [
@@ -31,6 +32,7 @@ import { LocalStorageService } from './local-storage/local-storage.service';
     ConfigurationService,
     LocalStorageService,
     MapService,
+    AnalysisService,
     {
       provide: TuioClient,
       useFactory: (config: ConfigurationService) => new TuioClient({ enableCursorEvent: config.tuioCursorEvents }),

@@ -2,7 +2,7 @@ import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, Input, O
   Inject, LOCALE_ID } from '@angular/core';
 import { ConfigurationService } from '../configuration.service';
 import { RadarChartData } from '../radar-chart/radar-chart-data.model';
-import { MapService } from '../map/map.service';
+import { AnalysisService } from '../analysis.service';
 
 @Component({
   selector: 'app-canvas',
@@ -20,7 +20,7 @@ export class CanvasComponent implements AfterViewInit, OnChanges {
   @Input() private targetCriteria: RadarChartData;
   @Input() private activeMarkers: number[] = [];
 
-  constructor(@Inject(LOCALE_ID) private locale, private config: ConfigurationService, private mapService: MapService) { }
+  constructor(@Inject(LOCALE_ID) private locale, private config: ConfigurationService, private analysisService: AnalysisService) { }
 
   ngOnChanges() {
     this.refresh();
@@ -28,11 +28,9 @@ export class CanvasComponent implements AfterViewInit, OnChanges {
 
   ngAfterViewInit() {
     this.refresh();
-    // setInterval(() => this.draw(this.targetCriteria), 100);
   }
 
   refresh() {
-    // console.log('refresh');
     // Dynamically size the canvas so it matches the main-container div
     if (!this.mainContainerRef) {
       return;
@@ -87,7 +85,7 @@ export class CanvasComponent implements AfterViewInit, OnChanges {
 
       const currentAxis = data.axes.find(axis => axis.name === criterion.key);
       const normalizedValue = currentAxis.value;
-      const absoluteValue = Math.floor(normalizedValue * this.mapService.maxValues[criterion.key]);
+      const absoluteValue = Math.floor(normalizedValue * this.analysisService.maxValues[criterion.key]);
       if (!isNaN(absoluteValue)) {
         this.ctx.fillText(absoluteValue.toString(), offsetX, size + offsetY);
       }

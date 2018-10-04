@@ -27,7 +27,7 @@ export class LocalStorageService {
   sendSelectFeature(selectedFeature: Feature, criteriaForRadarChart: RadarChartData) {
     const message = {
       type: 'selectFeature',
-      feature:  selectedFeature,
+      feature: selectedFeature,
       chartData: criteriaForRadarChart
     };
     this.sendMessage(message);

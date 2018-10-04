@@ -1,70 +1,51 @@
 import { Injectable } from '@angular/core';
 import * as ol from 'openlayers';
-import { environment } from '../../environments/environment';
+
 import { ConfigurationService } from '../configuration.service';
-import { LocalStorageService } from '../local-storage/local-storage.service';
 import { Feature } from '../feature.model';
-import { RadarChartData } from '../radar-chart/radar-chart-data.model';
 
 @Injectable()
 export class MapService {
-  private instance: ol.Map;
-  private geoJSON: ol.format.GeoJSON = new ol.format.GeoJSON();
-  private dop20Source: ol.source.Tile;
-  private extra2000Source: ol.source.Tile;
-  private extra10000Source: ol.source.Tile;
-  private extra25000Source: ol.source.Tile;
-  private extra50000Source: ol.source.Tile;
-  private siteSource: ol.source.Vector;
-  private siteMarkerSource: ol.source.Vector;
-  private siteHighlightSource: ol.source.Vector;
-  private siteLockedSource: ol.source.Vector;
-  allFeatures: ol.Feature[] = [];
-  topFeatures: ol.Feature[] = [];
-  maxValues: {[key: string]: number} = {};
-  lastSelectedFeature: ol.Feature;
+  private map: ol.Map;
+  private geoJSON = new ol.format.GeoJSON();
+  baseLayers: MapLayer[];
+  topicLayers: MapLayer[];
 
-  constructor(private config: ConfigurationService, private localStorageService: LocalStorageService) {
-    this.setSources();
-    this.instance = new ol.Map({
+  constructor(private config: ConfigurationService) {
+    this.map = new ol.Map({
       controls: ol.control.defaults().extend([new ol.control.ScaleLine()]),
       interactions: ol.interaction.defaults({
         altShiftDragRotate: false,
         pinchRotate: false
-      }),
-      layers: this.getLayers(),
-      view: new ol.View({
-        center: ol.proj.fromLonLat([9.99, 53.55]),
-        zoom: 11,
-        maxZoom: 18
       })
     });
-    this.registerSiteSourceAddFeatureListener();
-    this.registerSiteHighlightSourceAddFeatureListener();
-    this.registerSiteLockedAddFeatureListener();
-    this.registerSiteLockedRemoveFeatureListener();
-    if (!environment.production) {
-      this.registerSingleClickListener();
-      this.registerDoubleClickListener();
-    }
+
+    this.addLayers(this.config.baseLayers, this.config.topicLayers);
   }
 
-  zoomTo(feature: ol.Feature) {
-    this.instance.getView().animate(
-      { zoom: 13 },
-      { center: ol.extent.getCenter(feature.getGeometry().getExtent()) },
-      { zoom: 17 }
-    );
+  on(type: string, listener: ol.EventsListenerFunctionType): void {
+    this.map.on(type, listener);
   }
 
-  setTarget(target: string) {
-    this.instance.setTarget(target);
+  setTarget(target: string): void {
+    this.map.setTarget(target);
   }
 
-  extentContainsCoordinate(coordinate: [number, number]) {
-    const extent = this.instance
-      .getView()
-      .calculateExtent(this.instance.getSize());
+  setView(center: ol.Coordinate, zoom: number, minZoom: number, maxZoom: number): void {
+    this.map.setView(new ol.View({
+      center: ol.proj.fromLonLat(center),
+      zoom: zoom,
+      minZoom: minZoom,
+      maxZoom: maxZoom
+    }));
+  }
+
+  getView(): ol.View {
+    return this.map.getView();
+  }
+
+  extentContainsCoordinate(coordinate: ol.Coordinate): boolean {
+    const extent = this.map.getView().calculateExtent(this.map.getSize());
     return (
       coordinate[0] > extent[0] &&
       coordinate[1] > extent[1] &&
@@ -73,368 +54,348 @@ export class MapService {
     );
   }
 
-  featureBufferContainsCoordinate(feature: ol.Feature, coordinate: [number, number]) {
+  featureBufferContainsCoordinate(feature: ol.Feature, coordinate: ol.Coordinate): boolean {
     const buffer = ol.extent.buffer(feature.getGeometry().getExtent(), 100);
     return ol.extent.containsCoordinate(buffer, coordinate);
   }
 
-  getFeatureAtCoordinate(coordinate: [number, number]) {
-    return this.siteSource.getFeaturesAtCoordinate(coordinate)[0];
+  flattenFeature(feature: ol.Feature, layer: MapLayer): Feature {
+    const flatFeature = this.featureToJSON(feature);
+    flatFeature.layer = layer;
+    flatFeature.properties = feature.getProperties();
+    flatFeature.olFeature = feature;
+    return flatFeature;
   }
 
-  highlightFeature(feature: ol.Feature) {
-    this.siteHighlightSource.addFeature(feature);
-  }
-
-  lockFeature(feature: ol.Feature) {
-    this.siteLockedSource.addFeature(feature);
-  }
-
-  unlockFeature(feature: ol.Feature) {
-    this.siteLockedSource.removeFeature(feature);
-  }
-
-  featureToJSON(feature: ol.Feature) {
+  featureToJSON(feature: ol.Feature): Feature {
     return <Feature>JSON.parse(this.geoJSON.writeFeature(feature));
   }
 
-  onSelectMapFeature(coordinate: [number, number]) {
-    const selectedFeature = this.getFeatureAtCoordinate(coordinate);
-
-    if (!selectedFeature) {
-      return null;
-    }
-    if (
-      !this.lastSelectedFeature ||
-      this.lastSelectedFeature.getId() !== selectedFeature.getId()
-    ) {
-      this.highlightFeature(selectedFeature);
-      this.sendSelectFeature(selectedFeature);
-      this.lastSelectedFeature = selectedFeature;
-    }
-    return selectedFeature;
-  }
-
-  normalizeLocationValues(feature: ol.Feature) {
-    if (!this.maxValues || this.maxValues.length === 0) {
-      throw new Error('max values are not defined');
-    }
-    const properties = feature.getProperties();
-
-    return this.config.searchCriteria.map(item => ({
-      name: item.key,
-      value: properties[item.key] / this.maxValues[item.key]
-    }));
-  }
-
   // Conversion from display XY to map coordinates
-  getCoordinateFromXY(x: number, y: number) {
-    const coordinate = this.instance.getCoordinateFromPixel([this.getWindowX(x), this.getWindowY(y)]);
+  getCoordinateFromXY(x: number, y: number): ol.Coordinate {
+    const coordinate = this.map.getCoordinateFromPixel([x * window.innerWidth, y * window.innerHeight]);
     if (!this.extentContainsCoordinate(coordinate)) {
       return null;
     }
     return coordinate;
   }
 
-  /*
-   * Returns pixel coordinate from a given X value in range [0, 1]
-   */
-  getWindowX(x: number) {
-    return x * window.innerWidth;
+  getFeatureCenterpoint(feature: ol.Feature): ol.Coordinate {
+    return ol.extent.getCenter(feature.getGeometry().getExtent());
   }
 
-  /*
-   * Returns pixel coordinate from a given Y value in range [0, 1]
-   */
-  getWindowY(y: number) {
-    return y * window.innerHeight;
+  getSelectedFeatures(coordinate: ol.Coordinate): ol.Feature[] {
+    let selectedFeatures = [];
+    for (const layer of this.topicLayers) {
+      const source = layer.olLayer.getSource();
+      if (source.constructor === ol.source.Vector) {
+        const features = (<ol.source.Vector>source).getFeaturesAtCoordinate(coordinate);
+        selectedFeatures = selectedFeatures.concat(features);
+      }
+    }
+    return selectedFeatures;
   }
 
-  findTopFeatureById(id: string | number) {
-    return this.topFeatures.find(item => item.getId() === id);
-  }
-
-  private registerSingleClickListener() {
-    this.instance.on('singleclick', (e: ol.MapBrowserEvent) => {
-      this.onSelectMapFeature(e.coordinate);
-    });
-  }
-
-  private registerDoubleClickListener() {
-    this.instance.on('dblclick', (e: ol.MapBrowserEvent) => {
-      const selectedFeature = this.getFeatureAtCoordinate(e.coordinate);
-      if (selectedFeature) {
-        const alreadyLocked = this.topFeatures.find(item => {
-          return item.getId() === selectedFeature.getId();
-        });
-        if (alreadyLocked) {
-          this.topFeatures.splice(this.topFeatures.indexOf(selectedFeature), 1);
-          this.unlockFeature(selectedFeature);
-          this.sendSelectFeature(selectedFeature);
-          this.lastSelectedFeature = selectedFeature;
-        } else {
-          this.topFeatures.push(selectedFeature);
-          this.lockFeature(selectedFeature);
-          this.sendSelectFeature(selectedFeature);
-          this.lastSelectedFeature = selectedFeature;
+  getSelectedLayer(feature: ol.Feature, coordinate: ol.Coordinate): MapLayer {
+    for (const layer of this.topicLayers) {
+      const source = layer.olLayer.getSource();
+      if (source.constructor === ol.source.Vector) {
+        const features = (<ol.source.Vector>source).getFeaturesAtCoordinate(coordinate);
+        if (features.indexOf(feature) > -1) {
+          return layer;
         }
-        this.sendTopFeatures();
       }
-    });
+    }
   }
 
-  private sendSelectFeature(selectedFeature: ol.Feature) {
-    const locationValues = new RadarChartData(
-      selectedFeature.getId() + '-values',
-      this.normalizeLocationValues(selectedFeature)
+  getVectorLayerSource(layer: MapLayer): ol.source.Vector {
+    const source = <ol.source.Vector>layer.olLayer.getSource();
+    if (source.constructor !== ol.source.Vector) {
+      return;
+    }
+    return source;
+  }
+
+  getBaseLayerByName(name: string): MapLayer {
+    return this.baseLayers.find(layer => layer.name === name);
+  }
+
+  getTopicLayerByName(name: string): MapLayer {
+    return this.topicLayers.find(layer => layer.name === name);
+  }
+
+  /*
+   * Zoom out, fly to the feature, zoom in
+   */
+  zoomToFeature(feature: ol.Feature, zoom1: number, zoom2: number): void {
+    this.map.getView().animate(
+      { zoom: zoom1 },
+      { center: this.getFeatureCenterpoint(feature) },
+      { zoom: zoom2 }
     );
-    this.localStorageService.sendSelectFeature(this.featureToJSON(selectedFeature), locationValues);
   }
 
-  private sendTopFeatures() {
-    const topFeaturesAsJSON = this.topFeatures.map(feature => this.featureToJSON(feature));
-    const chartData = this.topFeatures.map(feature => new RadarChartData(
-      feature.getId() + '-values',
-      this.normalizeLocationValues(feature)
-    ));
-    this.localStorageService.sendSetTopFeatures(topFeaturesAsJSON, chartData);
+  dispatchSelectEvent(layer: MapLayer, selected: ol.Feature[], coordinate: ol.Coordinate): void {
+    const source = <ol.source.Vector>layer.olLayer.getSource();
+    if (source.constructor !== ol.source.Vector) {
+      return;
+    }
+    const deselected = source.getFeatures().filter(feature => selected.indexOf(feature) === -1);
+
+    const selectEvent = <ol.interaction.Select.Event>{
+      type: 'select',
+      selected: selected,
+      deselected: deselected,
+      mapBrowserEvent: {
+        coordinate: coordinate
+      }
+    };
+    layer.olSelectInteraction.dispatchEvent(selectEvent);
+
+    // Apply appropriate styles to selected and deselected features
+    selected.forEach(feature => feature.setStyle(layer.olSelectedStyleFn));
+    deselected.forEach(feature => feature.setStyle(layer.olDefaultStyleFn));
   }
 
-  private registerSiteSourceAddFeatureListener() {
-    this.siteSource.on('addfeature', (e: ol.source.VectorEvent) => {
-      const getFeatures = this.siteSource.getFeatures();
-      const properties = e.feature.getProperties();
+  private addLayers(baseLayersConfig: MapLayer[], topicLayersConfig: MapLayer[]): void {
+    this.baseLayers = this.generateLayers(baseLayersConfig);
+    this.topicLayers = this.generateLayers(topicLayersConfig);
 
-      if (getFeatures.length > this.allFeatures.length) {
-        // Store features from site layer
-        this.allFeatures.push(e.feature);
+    this.generateStyles(this.baseLayers);
+    this.generateStyles(this.topicLayers);
 
-        // Store max values
-        this.config.searchCriteria.forEach(item => {
-          this.maxValues[item.key] = Math.max(
-            this.maxValues[item.key] || 0,
-            parseInt(properties[item.key], 10) || 0
-          );
+    for (const layer of this.baseLayers.concat(this.topicLayers)) {
+      this.map.addLayer(layer.olLayer);
+
+      // Set the default/selected styles for each vector layer
+      if (layer.olLayer.constructor === ol.layer.Vector) {
+        (<ol.layer.Vector>layer.olLayer).setStyle(layer.olDefaultStyleFn);
+
+        if (layer.selectable) {
+          this.addSelectedStyleOnLayer(layer);
+        }
+      }
+    }
+  }
+
+  private addSelectedStyleOnLayer(layer: MapLayer): void {
+    layer.olSelectInteraction = new ol.interaction.Select({
+      // Make this interaction work only for the layer provided
+      layers: [layer.olLayer],
+      style: (feature: ol.Feature, resolution: number) => {
+        return layer.olSelectedStyleFn(feature, resolution);
+      },
+      hitTolerance: 8
+    });
+
+    this.map.addInteraction(layer.olSelectInteraction);
+  }
+
+  private generateLayers(layersConfig: MapLayer[]): MapLayer[] {
+    return layersConfig.map(layer => {
+      // Create the OpenLayers layer
+      const source = layer.source;
+      switch (layer.type) {
+        case 'OSM':
+          layer.olLayer = new ol.layer.Tile({
+            source: new ol.source.OSM({
+              url: source.url ? source.url : undefined
+            }),
+            opacity: layer.opacity,
+            zIndex: layer.zIndex,
+            visible: layer.visible
+          });
+          break;
+        case 'Tile':
+          layer.olLayer = new ol.layer.Tile({
+            source: new ol.source.TileImage({
+              url: source.url,
+              projection: source.projection
+            }),
+            opacity: layer.opacity,
+            zIndex: layer.zIndex,
+            visible: layer.visible
+          });
+          break;
+        case 'WMS':
+          if (!source.wmsParams) {
+            throw new Error('No WMS params defined for layer ' + layer.name);
+          }
+          if (source.wmsParams.TILED) {
+            layer.olLayer = new ol.layer.Tile({
+              source: new ol.source.TileWMS({
+                url: source.url,
+                params: source.wmsParams
+              }),
+              opacity: layer.opacity,
+              zIndex: layer.zIndex,
+              visible: layer.visible
+            });
+          } else {
+            layer.olLayer = new ol.layer.Image({
+              source: new ol.source.ImageWMS({
+                url: source.url,
+                params: source.wmsParams,
+                projection: source.wmsProjection
+              }),
+              opacity: layer.opacity,
+              zIndex: layer.zIndex,
+              visible: layer.visible
+            });
+          }
+          break;
+        case 'Vector':
+          if (!source.format || typeof ol.format[source.format] !== 'function') {
+            throw new Error('No vector format provided for layer ' + layer.name);
+          }
+          layer.olLayer = new ol.layer.Vector({
+            renderMode: 'image', // for performance
+            source: new ol.source.Vector({
+              url: source.url,
+              format: new ol.format[source.format]()
+            }),
+            opacity: layer.opacity,
+            zIndex: layer.zIndex,
+            visible: layer.visible
+          });
+          break;
+        case 'Heatmap':
+          layer.olLayer = new ol.layer.Heatmap({
+            source: new ol.source.Vector({
+              url: source.url,
+              format: new ol.format[source.format]()
+            }),
+            weight: layer.weightAttribute ? feature => feature.get(layer.weightAttribute) / layer.weightAttributeMax : () => 1,
+            gradient: layer.gradient && layer.gradient.length > 1 ? layer.gradient : ['#0ff', '#0f0', '#ff0', '#f00'],
+            radius: layer.radius !== undefined ? layer.radius : 16,
+            blur: layer.blur !== undefined ? layer.blur : 30,
+            opacity: layer.opacity,
+            zIndex: layer.zIndex,
+            visible: layer.visible
+          });
+          break;
+      }
+      return layer;
+    }) || [];
+  }
+
+  private generateStyles(layers: MapLayer[]) {
+    for (const layer of layers) {
+      if (layer.style) {
+        layer.olDefaultStyleFn = this.styleConfigToStyleFunction(layer.style, layer.scale, layer.scaleAttribute);
+      }
+      if (layer.selectedStyle) {
+        layer.olSelectedStyleFn = this.styleConfigToStyleFunction(layer.selectedStyle, layer.scale, layer.scaleAttribute);
+      }
+      if (layer.extraStyle) {
+        layer.olExtraStyleFn = this.styleConfigToStyleFunction(layer.extraStyle, layer.scale, layer.scaleAttribute);
+      }
+    }
+  }
+
+  private styleConfigToStyleFunction(style: LayerStyle, scale: { [key: string]: ol.Color }, scaleAttribute: string): ol.StyleFunction {
+    // Function to build a Fill object
+    const getFill = (feature: ol.Feature) => {
+      if (style.fill.color) {
+        return new ol.style.Fill(style.fill);
+      }
+      if (style.fill.categorizedScale) {
+        return new ol.style.Fill({
+          color: this.getColorFromCategorizedScale(feature, scaleAttribute, scale)
         });
       }
-    });
-  }
-
-  private registerSiteHighlightSourceAddFeatureListener() {
-    this.siteHighlightSource.on('addfeature', (e: ol.source.VectorEvent) => {
-      // Remove the underlying feature and re-add all others to siteSource
-      const featureById = this.siteSource.getFeatureById(e.feature.getId());
-      if (featureById) {
-        this.siteSource.removeFeature(featureById);
-      }
-      this.siteSource.addFeatures(
-        this.allFeatures.filter(function(feature) {
-          return feature.getId() !== e.feature.getId();
-        })
-      );
-      // Remove all others from siteHighlightSource
-      this.siteHighlightSource
-        .getFeatures()
-        .filter(function(feature) {
-          return feature.getId() !== e.feature.getId();
-        })
-        .forEach(feature => {
-          this.siteHighlightSource.removeFeature(feature);
+      if (style.fill.graduatedScale) {
+        return new ol.style.Fill({
+          color: this.getColorFromGraduatedScale(feature, scaleAttribute, scale)
         });
+      }
+    };
+
+    // Function to build a Stroke object
+    const getStroke = (feature: ol.Feature) => {
+      if (style.stroke.color) {
+        return new ol.style.Stroke(style.stroke);
+      }
+      if (style.stroke.categorizedScale) {
+        return new ol.style.Stroke({
+          color: this.getColorFromCategorizedScale(feature, scaleAttribute, scale),
+          width: style.stroke.width
+        });
+      }
+      if (style.stroke.graduatedScale) {
+        return new ol.style.Stroke({
+          color: this.getColorFromGraduatedScale(feature, scaleAttribute, scale),
+          width: style.stroke.width
+        });
+      }
+    };
+
+    const minResolution = style.text && style.text.minResolution ? style.text.minResolution : 0;
+    const maxResolution = style.text && style.text.maxResolution ? style.text.maxResolution : Infinity;
+
+    // Here the actual style function is returned
+    return (feature: ol.Feature, resolution: number) => new ol.style.Style({
+      fill: style.fill ? getFill(feature) : null,
+      stroke: style.stroke ? getStroke(feature) : null,
+      image: style.circle ? new ol.style.Circle({
+        radius: style.circle.radius,
+        fill: new ol.style.Fill(style.circle.fill),
+        stroke: new ol.style.Stroke(style.circle.stroke)
+      }) : style.icon ? new ol.style.Icon({
+        src: style.icon.src,
+        anchor: style.icon.anchor
+      }) : null,
+      text: style.text && resolution <= maxResolution && resolution >= minResolution ? new ol.style.Text({
+        text: this.formatText(feature.get(style.text.attribute), style.text.round),
+        font: style.text.font,
+        fill: new ol.style.Fill(style.text.fill),
+        stroke: new ol.style.Stroke(style.text.stroke),
+        offsetX: style.text.offsetX,
+        offsetY: style.text.offsetY
+      }) : null
     });
   }
 
-  private registerSiteLockedAddFeatureListener() {
-    this.siteLockedSource.on('addfeature', (e: ol.source.VectorEvent) => {
-      const featureById = this.siteHighlightSource.getFeatureById(e.feature.getId());
-      if (featureById) {
-        this.siteHighlightSource.removeFeature(featureById);
-      }
-    });
+  private formatText(value: any, round: boolean): string {
+    if (value === null) {
+      return '';
+    }
+    if (typeof value === 'number') {
+      value = round ? Math.round(value) : value;
+    }
+    return '' + value;
   }
 
-  private registerSiteLockedRemoveFeatureListener() {
-    this.siteLockedSource.on('removefeature', (e: ol.source.VectorEvent) => {
-      this.siteHighlightSource.addFeature(e.feature);
-    });
+  private getColorFromCategorizedScale(feature: ol.Feature, attribute: string, scale: { [key: string]: ol.Color }): ol.Color {
+    if (!scale) {
+      throw new Error('Cannot apply style: scale is not defined');
+    }
+    if (!attribute) {
+      throw new Error('Cannot apply style: scale attribute is not defined');
+    }
+    return scale[feature.get(attribute)];
   }
 
-  private setSources() {
-    this.dop20Source = new ol.source.TileWMS({
-      url: environment.geoserverUrl + 'locationfinder/wms',
-      params: {
-        LAYERS: 'locationfinder:dop20',
-        TILED: true,
-        FORMAT: 'image/jpeg',
-        WIDTH: 256,
-        HEIGHT: 256,
-        SRS: 'EPSG:4326'
+  private getColorFromGraduatedScale(feature: ol.Feature, attribute: string, scale: { [key: string]: ol.Color }): ol.Color {
+    if (!scale) {
+      throw new Error('Cannot apply style: scale is not defined');
+    }
+    if (!attribute) {
+      throw new Error('Cannot apply style: scale attribute is not defined');
+    }
+    let value = feature.get(attribute);
+    if (value === null) {
+      value = 0;
+    }
+    if (typeof value !== 'number') {
+      throw new Error('Cannot apply style: value is not a number');
+    }
+    return Object.entries(scale).reduce((previous, current) => {
+      const limit = parseInt(current[0], 10);
+      if (value < limit) {
+        return previous;
       }
-    });
-
-    this.extra2000Source = new ol.source.TileWMS({
-      url: environment.geoserverUrl + 'locationfinder/wms',
-      params: {
-        LAYERS: 'locationfinder:lf_2000',
-        TILED: true,
-        FORMAT: 'image/png',
-        WIDTH: 256,
-        HEIGHT: 256,
-        SRS: 'EPSG:4326'
-      }
-    });
-
-    this.extra10000Source = new ol.source.TileWMS({
-      url: environment.geoserverUrl + 'locationfinder/wms',
-      params: {
-        LAYERS: 'locationfinder:lf_10000',
-        TILED: true,
-        FORMAT: 'image/png',
-        WIDTH: 256,
-        HEIGHT: 256,
-        SRS: 'EPSG:4326'
-      }
-    });
-
-    this.extra25000Source = new ol.source.TileWMS({
-      url: environment.geoserverUrl + 'locationfinder/wms',
-      params: {
-        LAYERS: 'locationfinder:lf_25000',
-        TILED: true,
-        FORMAT: 'image/png',
-        WIDTH: 256,
-        HEIGHT: 256,
-        SRS: 'EPSG:4326'
-      }
-    });
-
-    this.extra50000Source = new ol.source.TileWMS({
-      url: environment.geoserverUrl + 'locationfinder/wms',
-      params: {
-        LAYERS: 'locationfinder:lf_50000',
-        TILED: true,
-        FORMAT: 'image/png',
-        WIDTH: 256,
-        HEIGHT: 256,
-        SRS: 'EPSG:4326'
-      }
-    });
-
-    this.siteSource = new ol.source.Vector({
-      format: this.geoJSON,
-      url: environment.geoserverUrl +
-        'locationfinder/wfs' +
-        '?service=WFS' +
-        '&version=1.1.0' +
-        '&request=GetFeature' +
-        '&typename=locationfinder:grundstuecke' +
-        '&outputFormat=application/json' +
-        '&srsname=EPSG:3857'
-    });
-
-    this.siteMarkerSource = new ol.source.Vector({
-      format: this.geoJSON,
-      url: environment.geoserverUrl +
-        'locationfinder/wfs' +
-        '?service=WFS' +
-        '&version=1.1.0' +
-        '&request=GetFeature' +
-        '&typename=locationfinder:grundstuecke_centerpoints' +
-        '&outputFormat=application/json' +
-        '&srsname=EPSG:3857'
-    });
-
-    this.siteHighlightSource = new ol.source.Vector();
-
-    this.siteLockedSource = new ol.source.Vector();
-  }
-
-  private getLayers() {
-    const dop20Layer = new ol.layer.Tile({
-      source: this.dop20Source
-    });
-
-    const extra2000Layer = new ol.layer.Tile({
-      source: this.extra2000Source,
-      maxResolution: 2.6
-    });
-
-    const extra10000Layer = new ol.layer.Tile({
-      source: this.extra10000Source,
-      minResolution: 2.6,
-      maxResolution: 13.5
-    });
-
-    const extra25000Layer = new ol.layer.Tile({
-      source: this.extra25000Source,
-      minResolution: 13.5,
-      maxResolution: 33
-    });
-
-    const extra50000Layer = new ol.layer.Tile({
-      source: this.extra50000Source,
-      minResolution: 33
-    });
-
-    const siteLayer = new ol.layer.Vector({
-      source: this.siteSource,
-      style: new ol.style.Style({
-        fill: new ol.style.Fill({
-          color: 'rgba(255, 255, 0, 0.5)'
-        }),
-        stroke: new ol.style.Stroke({
-          color: 'rgba(255, 255, 0, 1)',
-          width: 4
-        })
-      })
-    });
-
-    const siteMarkerLayer = new ol.layer.Vector({
-      source: this.siteMarkerSource,
-      style: new ol.style.Style({
-        image: new ol.style.Icon({
-          anchor: [0.5, 1],
-          src: './assets/Map_marker.svg'
-        })
-      })
-    });
-
-    const siteHighlightLayer = new ol.layer.Vector({
-      source: this.siteHighlightSource,
-      style: new ol.style.Style({
-        fill: new ol.style.Fill({
-          color: 'rgba(255, 165, 0, 0.5)'
-        }),
-        stroke: new ol.style.Stroke({
-          color: 'rgba(255, 165, 0, 1)',
-          width: 4
-        })
-      })
-    });
-
-    const siteLockedLayer = new ol.layer.Vector({
-      source: this.siteLockedSource,
-      style: new ol.style.Style({
-        fill: new ol.style.Fill({
-          color: 'rgba(0, 255, 0, 0.5)'
-        }),
-        stroke: new ol.style.Stroke({
-          color: 'rgba(0, 255, 0, 1)',
-          width: 4
-        })
-      })
-    });
-
-    return [
-      dop20Layer,
-      extra2000Layer,
-      extra10000Layer,
-      extra25000Layer,
-      extra50000Layer,
-      siteLayer,
-      siteHighlightLayer,
-      siteLockedLayer,
-      siteMarkerLayer
-    ];
+      return current[1];
+    }, <ol.Color>[0, 0, 0, 1]);
   }
 }

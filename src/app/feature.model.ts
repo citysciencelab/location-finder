@@ -1,6 +1,7 @@
 export interface Feature {
   type: string;
   id: string;
-  geometry: ol.render.Feature;
+  layer: MapLayer;
   properties: { [k: string]: any };
+  olFeature: ol.Feature;
 }

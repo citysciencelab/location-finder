@@ -1,9 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { TuioClient } from 'tuio-client';
+
 import { environment } from '../../environments/environment';
 import { ConfigurationService } from '../configuration.service';
 import { LocalStorageService } from '../local-storage/local-storage.service';
 import { MapService } from '../map/map.service';
+import { AnalysisService } from '../analysis.service';
+import { Feature } from '../feature.model';
 import { RadarChartData } from '../radar-chart/radar-chart-data.model';
 import { MarkerType } from '../marker-type.enum';
 
@@ -19,19 +22,16 @@ export class TouchscreenComponent implements OnInit {
   currentStepHasCanvas: boolean;
   private initialAngle: number;
   private initialLocked: boolean;
-  private targetCriteria: RadarChartData;
+  private lastSelectedFeature: Feature;
   private activeMarkers: number[] = [];
   private computerBleeped = false;
+  private sitesLayer: MapLayer;
 
   constructor(private config: ConfigurationService, private localStorageService: LocalStorageService, private tuioClient: TuioClient,
-    private mapService: MapService) {
-    this.targetCriteria = new RadarChartData(
-      'target-values',
-      this.config.searchCriteria.map(item => ({ name: item.key, value: 0 }))
-    );
-  }
+    private mapService: MapService, private analysisService: AnalysisService) { }
 
   ngOnInit() {
+    this.sitesLayer = this.mapService.getTopicLayerByName('sites');
     this.tuioClient.connect(environment.socketUrl);
   }
 
@@ -48,11 +48,11 @@ export class TouchscreenComponent implements OnInit {
     }
 
     if (step === 5 && !this.computerBleeped) {
-      const winnerFeature = this.computerSagt();
+      const winnerFeature = this.analysisService.computerSagt();
       this.computerBleeped = true;
-      this.mapService.zoomTo(winnerFeature);
+      this.mapService.zoomToFeature(winnerFeature.olFeature, 13, 17);
       this.localStorageService.sendComputerSagt(
-        this.mapService.featureToJSON(winnerFeature),
+        winnerFeature,
         this.featureToRadarChartData(winnerFeature)
       );
     }
@@ -90,10 +90,8 @@ export class TouchscreenComponent implements OnInit {
         }
         this.computerBleeped = false;
         // Create an immutable object so the CanvasComponent's change detection is triggered
-        const currentAxis = this.targetCriteria.findAxisByKey(adjustableCriterion.key);
-        currentAxis.value = Math.max(0, Math.min(1, object.aAngle / Math.PI - 0.5));
-        this.targetCriteria = new RadarChartData(this.targetCriteria.className, this.targetCriteria.axes);
-        this.localStorageService.sendSetCriteria(this.targetCriteria);
+        this.analysisService.updateTargetCriteria(adjustableCriterion.key, Math.max(0, Math.min(1, object.aAngle / Math.PI - 0.5)));
+        this.localStorageService.sendSetCriteria(this.analysisService.targetCriteria);
         break;
 
       case MarkerType.select:
@@ -104,22 +102,25 @@ export class TouchscreenComponent implements OnInit {
         if (!coordinate) {
           return;
         }
-        const changedFeature = this.mapService.onSelectMapFeature(coordinate);
+        const changedFeature = this.mapService.getSelectedFeatures(coordinate)[0];
 
         if (changedFeature) {
+          this.mapService.dispatchSelectEvent(this.sitesLayer, [changedFeature], coordinate);
+
           this.initialAngle = object.aAngle;
-          this.initialLocked = !!this.mapService.findTopFeatureById(changedFeature.getId());
+          this.initialLocked = !!this.analysisService.findTopFeatureById(changedFeature.getId());
+          this.initialLocked = false;
         }
-        if (!this.mapService.lastSelectedFeature) {
+        if (!this.lastSelectedFeature) {
           return;
         }
 
         // Make sure the lock mechanism only works while the marker is near the geometry
-        if (!this.mapService.featureBufferContainsCoordinate(this.mapService.lastSelectedFeature, coordinate)) {
+        if (!this.mapService.featureBufferContainsCoordinate(this.lastSelectedFeature.olFeature, coordinate)) {
           return;
         }
 
-        const featureIsTopFeature = !!this.mapService.findTopFeatureById(this.mapService.lastSelectedFeature.getId());
+        const featureIsTopFeature = !!this.analysisService.findTopFeatureById(this.lastSelectedFeature.id);
 
         // Lock/unlock at a 1/4 marker rotation clockwise or anticlockwise
         let relativeAngle = object.aAngle - this.initialAngle + Math.PI / 2;
@@ -130,18 +131,18 @@ export class TouchscreenComponent implements OnInit {
 
         if (this.initialLocked && featureIsTopFeature && doChange ||
           !this.initialLocked && featureIsTopFeature && !doChange) {
-          this.mapService.topFeatures.splice(this.mapService.topFeatures.indexOf(this.mapService.lastSelectedFeature), 1);
-          this.mapService.unlockFeature(this.mapService.lastSelectedFeature);
+          this.analysisService.topFeatures.splice(this.analysisService.topFeatures.indexOf(this.lastSelectedFeature), 1);
+          this.analysisService.unlockFeature(this.lastSelectedFeature);
         }
         if (this.initialLocked && !featureIsTopFeature && !doChange ||
           !this.initialLocked && !featureIsTopFeature && doChange) {
-          this.mapService.topFeatures.push(this.mapService.lastSelectedFeature);
-          this.mapService.lockFeature(this.mapService.lastSelectedFeature);
+          this.analysisService.topFeatures.push(this.lastSelectedFeature);
+          this.analysisService.lockFeature(this.lastSelectedFeature);
         }
 
         this.localStorageService.sendSetTopFeatures(
-          this.mapService.topFeatures.map(this.mapService.featureToJSON, this.mapService),
-          this.mapService.topFeatures.map(this.featureToRadarChartData, this)
+          this.analysisService.topFeatures,
+          this.analysisService.topFeatures.map(this.featureToRadarChartData, this)
         );
     }
   }
@@ -160,33 +161,7 @@ export class TouchscreenComponent implements OnInit {
     return this.config.searchCriteria.find(item => item.markerID === markerId);
   }
 
-  featureToRadarChartData(feature: ol.Feature) {
-    return new RadarChartData(feature.getId() + '-values', this.mapService.normalizeLocationValues(feature));
-  }
-
-  /*
-   * Returns the feature whose properties exhibit the greatest similarity with the targetCriteria
-   */
-  computerSagt() {
-    let minEuclideanDistance = Infinity;
-    let topFeature: ol.Feature;
-
-    for (const feature of this.mapService.allFeatures) {
-      const normalizedValues = this.mapService.normalizeLocationValues(feature);
-      const sum = normalizedValues
-        .map(axis => {
-          const targetAxis = this.targetCriteria.findAxisByKey(axis.name);
-          return Math.pow(axis.value - targetAxis.value, 2);
-        })
-        .reduce((previous, current) => previous + current, 0);
-      const euclideanDistance = Math.sqrt(sum);
-
-      if (euclideanDistance < minEuclideanDistance) {
-        minEuclideanDistance = euclideanDistance;
-        topFeature = feature;
-      }
-    }
-
-    return topFeature;
+  featureToRadarChartData(feature: Feature) {
+    return new RadarChartData(feature.id + '-values', this.analysisService.normalizeLocationValues(feature));
   }
 }
