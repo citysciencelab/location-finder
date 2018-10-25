@@ -3,9 +3,16 @@
     <img src="./assets/LocationFinderLogo.png" />
   </div>
 
-  <app-map [class.hidden]="!currentStepHasMap" (selectFeature)="onSelectFeature($event)" (toggleLockFeature)="onToggleLockFeature($event)"></app-map>
+  <app-map (selectFeature)="onSelectFeature($event)" (toggleLockFeature)="onToggleLockFeature($event)"></app-map>
 
-  <app-canvas *ngIf="currentStepHasCanvas" [targetCriteria]="analysisService.targetCriteria" [activeMarkers]="activeMarkers"></app-canvas>
+  <app-canvas *ngIf="showCanvas" [targetCriteria]="analysisService.targetCriteria" [activeMarkers]="activeMarkers"></app-canvas>
+
+  <div *ngIf="showSliders" class="sliders">
+    <div *ngFor="let axis of analysisService.targetCriteria.axes" class="slider-container">
+      <span class="slider-label">{{ axis.name }}: {{ axis.sliderValue }}</span>
+      <input type="range" min="0" max="{{ analysisService.maxValues[axis.name] }}" [value]="axis.sliderValue" class="slider" (input)="onSliderInput(axis, $event)">
+    </div>
+  </div>
 
   <nav class="progress-slider">
     <div *ngFor="let step of steps" [attr.id]="'step' + step" class="progress-field" [class.selected]="step === currentStep" (click)="setStep(step)" (addobject)="onUpdateObject($event)" (updateobject)="onUpdateObject($event)">{{ step }}</div>

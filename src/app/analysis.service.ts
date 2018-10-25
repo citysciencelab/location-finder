@@ -14,7 +14,7 @@ export class AnalysisService {
   constructor(private config: ConfigurationService) {
     this.targetCriteria = new RadarChartData(
       'target-values',
-      this.config.searchCriteria.map(item => ({ name: item.key, value: 0 }))
+      this.config.searchCriteria.map(item => ({ name: item.key, color: item.color, value: 0, sliderValue: 0 }))
     );
   }
 
@@ -42,6 +42,15 @@ export class AnalysisService {
   unlockPlot(plot: Plot): void {
     this.topPlots.splice(this.topPlots.findIndex(item => item.id === plot.id), 1);
   }
+
+  // normalizeTargetValues(): { name: string; value: number }[] {
+  //   if (!this.maxValues || this.maxValues.length === 0) {
+  //     throw new Error('max values are not defined');
+  //   }
+  //
+  //
+  //   return this.targetCriteria;
+  // }
 
   normalizeLocationValues(plot: Plot): { name: string; value: number }[] {
     if (!this.maxValues || this.maxValues.length === 0) {

@@ -8,6 +8,7 @@ import { MapService } from '../map/map.service';
 import { AnalysisService } from '../analysis.service';
 import { Plot } from '../plot.model';
 import { RadarChartData } from '../radar-chart/radar-chart-data.model';
+import { RadarChartAxis } from '../radar-chart/radar-chart-axis.model';
 import { MarkerType } from '../marker-type.enum';
 
 @Component({
@@ -18,8 +19,8 @@ import { MarkerType } from '../marker-type.enum';
 export class TouchscreenComponent implements OnInit {
   steps = [1, 2, 3, 4, 5];
   currentStep: number;
-  currentStepHasMap: boolean;
-  currentStepHasCanvas: boolean;
+  showCanvas: boolean;
+  showSliders: boolean;
   private initialAngle: number;
   private initialLocked: boolean;
   private lastSelectedPlot: Plot;
@@ -45,8 +46,8 @@ export class TouchscreenComponent implements OnInit {
 
     if (step !== this.currentStep) {
       this.currentStep = step;
-      this.currentStepHasMap = [1, 3, 4, 5].indexOf(step) > -1;
-      this.currentStepHasCanvas = step === 2;
+      this.showCanvas = this.config.enableTuio && step === 2;
+      this.showSliders = !this.config.enableTuio && step === 2;
       this.localStorageService.sendSetProgress(step);
     }
 
@@ -162,6 +163,12 @@ export class TouchscreenComponent implements OnInit {
     }
   }
 
+  onSliderInput(axis: RadarChartAxis, evt: Event) {
+    axis.sliderValue = parseInt((<HTMLInputElement>evt.target).value, 10);
+    axis.value = axis.sliderValue / this.analysisService.maxValues[axis.name];
+    this.sendSetCriteria();
+  }
+
   onSelectFeature(olFeature: ol.Feature) {
     const plot = this.analysisService.allPlots.find(item => item.id === olFeature.getId());
     this.sendSelectPlot(plot);
@@ -187,6 +194,13 @@ export class TouchscreenComponent implements OnInit {
 
   plotToRadarChartData(plot: Plot) {
     return new RadarChartData(plot.id + '-values', this.analysisService.normalizeLocationValues(plot));
+  }
+
+  /*
+   * Send message (set criteria) via LocalStorageService
+   */
+  private sendSetCriteria(): void {
+    this.localStorageService.sendSetCriteria(this.analysisService.targetCriteria);
   }
 
   /*
