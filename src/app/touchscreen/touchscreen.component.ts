@@ -32,7 +32,10 @@ export class TouchscreenComponent implements OnInit {
 
   ngOnInit() {
     this.sitesLayer = this.mapService.getTopicLayerByName('sites');
-    this.tuioClient.connect(environment.socketUrl);
+
+    if (this.config.enableTuio) {
+      this.tuioClient.connect(environment.socketUrl);
+    }
   }
 
   setStep(step: number) {

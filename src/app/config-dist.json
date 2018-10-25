@@ -45,5 +45,6 @@
       "color": "239, 231, 1"
     }
   ],
+  "enableTuio": true,
   "tuioCursorEvents": true
 }

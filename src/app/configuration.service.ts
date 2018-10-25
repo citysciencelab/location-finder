@@ -9,6 +9,7 @@ export class ConfigurationService {
   progressMarkerID: number;
   selectionMarkerID: number;
   searchCriteria: SearchCriterion[];
+  enableTuio: boolean;
   tuioCursorEvents: boolean;
 
   constructor() {
@@ -17,6 +18,7 @@ export class ConfigurationService {
     this.progressMarkerID = config.progressMarkerID;
     this.selectionMarkerID = config.selectionMarkerID;
     this.searchCriteria = config.searchCriteria;
+    this.enableTuio = config.enableTuio;
     if (config.tuioCursorEvents !== undefined) {
       this.tuioCursorEvents = config.tuioCursorEvents;
     }
