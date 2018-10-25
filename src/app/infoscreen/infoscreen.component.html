@@ -12,7 +12,7 @@
       </div>
       <div id="introtext">
         <img id="kongress" src="./assets/Bild1.png">
-        <p i18n>11 parcels have been preselected based on the following criteria:</p>
+        <p i18n>11 plots have been preselected based on the following criteria:</p>
         <ul>
           <li i18n>20.000 m² floor space or more</li>
           <li i18n>no more than 10 minutes away from the nearest transit stop</li>
@@ -34,30 +34,30 @@
 
     <div id="step3" *ngIf="progress === 3" >
       <div class="header">
-        <h1 i18n>Inspect parcels</h1>
+        <h1 i18n>Inspect plots</h1>
         <div class="progress-field selected">3</div>
       </div>
       <div class="row">
-        <app-radar-chart [chartDatas]="[selectedFeatureChartData, targetChartData]" [style.visibility]="selectedFeature ? 'visible' : 'hidden'"></app-radar-chart>
-        <div class="infotable" id="infotable3" *ngIf="selectedFeature">
+        <app-radar-chart [chartDatas]="[selectedPlotChartData, targetChartData]" [style.visibility]="selectedPlot ? 'visible' : 'hidden'"></app-radar-chart>
+        <div class="infotable" id="infotable3" *ngIf="selectedPlot">
           <div class="metalock">
             <div class="lock">
-              <img *ngIf="!isSelectedFeatureLocked()" id="lock_open" src="./assets/lock_open.png" />
-              <img *ngIf="isSelectedFeatureLocked()" id="lock_closed" src="./assets/lock_closed.png" />
+              <img *ngIf="!isSelectedPlotLocked()" id="lock_open" src="./assets/lock_open.png" />
+              <img *ngIf="isSelectedPlotLocked()" id="lock_closed" src="./assets/lock_closed.png" />
             </div>
           </div>
           <table>
-            <tr><td><b>{{selectedFeature.properties.Adresse}}</b></td></tr>
-            <tr><td><img [src]="'./assets/' + selectedFeature.id + '.JPG'" class="infoimage" /></td></tr>
-            <tr><td><b i18n="@@Area_long">Area:</b> {{selectedFeature.properties.Gesamtarea}} m²</td><tr>
-            <tr><td><b i18n="@@Scientific_long">Scientific institutions within 3 km radius:</b> {{selectedFeature.properties.Scientific}}</td><tr>
-            <tr><td><b i18n="@@Hotels_long">Hotels within 1 km radius:</b> {{selectedFeature.properties.Hotels1km}}</td></tr>
-            <tr><td><b i18n="@@Gastronomy_long">Gastronomic establishments within 500 m radius:</b> {{selectedFeature.properties.Gastro}}</td></tr>
-            <tr><td><b i18n="@@Fitness_long">Fitness and wellness offers within 500 m radius:</b> {{selectedFeature.properties.Fitness}}</td></tr>
-            <tr><td><b i18n="@@Cultural_long">Cultural institutions within 3 km radius:</b> {{selectedFeature.properties.Kultur}}</td></tr>
-            <tr><td><b i18n="@@Greenspace_long">Greenspace and parks within 500 m radius:</b> {{selectedFeature.properties.Park_m2}} m²</td></tr>
-            <tr><td><b i18n="@@Transit_long">Nearest transit stop:</b> {{selectedFeature.properties.Bahn}} {{selectedFeature.properties.Bahn_m}} m / {{selectedFeature.properties.Bahn_min}} min <span i18n>by foot</span></td></tr>
-            <tr><td><b i18n="@@Airport_long">Distance to airport:</b> {{selectedFeature.properties.AIR_km}} km / {{selectedFeature.properties.AIR_OEV}} min <span i18n>by public transport</span></td></tr>
+            <tr><td><b>{{selectedPlot.properties.Adresse}}</b></td></tr>
+            <tr><td><img [src]="'./assets/' + selectedPlot.id + '.JPG'" class="infoimage" /></td></tr>
+            <tr><td><b i18n="@@Area_long">Area:</b> {{selectedPlot.properties.Gesamtarea}} m²</td><tr>
+            <tr><td><b i18n="@@Scientific_long">Scientific institutions within 3 km radius:</b> {{selectedPlot.properties.Scientific}}</td><tr>
+            <tr><td><b i18n="@@Hotels_long">Hotels within 1 km radius:</b> {{selectedPlot.properties.Hotels1km}}</td></tr>
+            <tr><td><b i18n="@@Gastronomy_long">Gastronomic establishments within 500 m radius:</b> {{selectedPlot.properties.Gastro}}</td></tr>
+            <tr><td><b i18n="@@Fitness_long">Fitness and wellness offers within 500 m radius:</b> {{selectedPlot.properties.Fitness}}</td></tr>
+            <tr><td><b i18n="@@Cultural_long">Cultural institutions within 3 km radius:</b> {{selectedPlot.properties.Kultur}}</td></tr>
+            <tr><td><b i18n="@@Greenspace_long">Greenspace and parks within 500 m radius:</b> {{selectedPlot.properties.Park_m2}} m²</td></tr>
+            <tr><td><b i18n="@@Transit_long">Nearest transit stop:</b> {{selectedPlot.properties.Bahn}} {{selectedPlot.properties.Bahn_m}} m / {{selectedPlot.properties.Bahn_min}} min <span i18n>by foot</span></td></tr>
+            <tr><td><b i18n="@@Airport_long">Distance to airport:</b> {{selectedPlot.properties.AIR_km}} km / {{selectedPlot.properties.AIR_OEV}} min <span i18n>by public transport</span></td></tr>
           </table>
         </div>
       </div>
@@ -65,58 +65,58 @@
 
     <div id="step4" *ngIf="progress === 4">
       <div class="header">
-        <h1 i18n>Compare parcels</h1>
+        <h1 i18n>Compare plots</h1>
         <div class="progress-field selected">4</div>
       </div>
       <div id="infotable-compare">
-        <table *ngIf="topFeaturesToDisplay.length > 0">
+        <table *ngIf="topPlotsToDisplay.length > 0">
           <tr>
             <td></td>
-            <td *ngFor="let feature of topFeaturesToDisplay">
-              <img [src]="'./assets/' + feature.id + '.JPG'" class="infoimage" />
+            <td *ngFor="let plot of topPlotsToDisplay">
+              <img [src]="'./assets/' + plot.id + '.JPG'" class="infoimage" />
             </td>
           </tr>
           <tr>
             <td></td>
-            <td *ngFor="let feature of topFeaturesToDisplay; let i = index">
-              <app-radar-chart [chartDatas]="[topFeaturesChartDatas[i], targetChartData]" [chartOptions]="comparisonChartOptions"></app-radar-chart>
+            <td *ngFor="let plot of topPlotsToDisplay; let i = index">
+              <app-radar-chart [chartDatas]="[topPlotsChartDatas[i], targetChartData]" [chartOptions]="comparisonChartOptions"></app-radar-chart>
             </td>
           </tr>
           <tr>
             <td style="font-weight:bold; width:300px;" i18n="@@Address_short">Address:</td>
-            <td *ngFor="let feature of topFeaturesToDisplay">{{feature.properties.Adresse}}</td>
+            <td *ngFor="let plot of topPlotsToDisplay">{{plot.properties.Adresse}}</td>
           </tr>
           <tr>
             <td style="font-weight:bold; width:300px;" i18n="@@Area_short">Area:</td>
-            <td *ngFor="let feature of topFeaturesToDisplay">{{feature.properties.Gesamtarea}} m²</td>
+            <td *ngFor="let plot of topPlotsToDisplay">{{plot.properties.Gesamtarea}} m²</td>
           </tr>
           <tr>
             <td style="font-weight:bold; width:300px;" i18n="@@Scientific_short">Science:</td>
-            <td *ngFor="let feature of topFeaturesToDisplay">{{feature.properties.Scientific}}</td>
+            <td *ngFor="let plot of topPlotsToDisplay">{{plot.properties.Scientific}}</td>
           </tr>
           <tr>
             <td style="font-weight:bold; width:300px;" i18n="@@Gastronomy_short">Gastronomy:</td>
-            <td *ngFor="let feature of topFeaturesToDisplay">{{feature.properties.Gastro}}</td>
+            <td *ngFor="let plot of topPlotsToDisplay">{{plot.properties.Gastro}}</td>
           </tr>
           <tr>
             <td style="font-weight:bold; width:300px;" i18n="@@Fitness_short">Fitness:</td>
-            <td *ngFor="let feature of topFeaturesToDisplay">{{feature.properties.Fitness}}</td>
+            <td *ngFor="let plot of topPlotsToDisplay">{{plot.properties.Fitness}}</td>
           </tr>
           <tr>
             <td style="font-weight:bold; width:300px;" i18n="@@Cultural_short">Culture:</td>
-            <td *ngFor="let feature of topFeaturesToDisplay">{{feature.properties.Kultur}}</td>
+            <td *ngFor="let plot of topPlotsToDisplay">{{plot.properties.Kultur}}</td>
           </tr>
           <tr>
             <td style="font-weight:bold; width:300px;" i18n="@@Greenspace_short">Greenspace:</td>
-            <td *ngFor="let feature of topFeaturesToDisplay">{{feature.properties.Park_m2}} m²</td>
+            <td *ngFor="let plot of topPlotsToDisplay">{{plot.properties.Park_m2}} m²</td>
           </tr>
           <tr>
             <td style="font-weight:bold; width:300px;" i18n="@@Transit_short">Nearest transit:</td>
-            <td *ngFor="let feature of topFeaturesToDisplay">{{feature.properties.Bahn}} {{feature.properties.Bahn_m}} m / {{feature.properties.Bahn_min}} min <span i18n>(foot)</span></td>
+            <td *ngFor="let plot of topPlotsToDisplay">{{plot.properties.Bahn}} {{plot.properties.Bahn_m}} m / {{plot.properties.Bahn_min}} min <span i18n>(foot)</span></td>
           </tr>
           <tr>
             <td style="font-weight:bold; width:300px;" i18n="@@Airport_short">Airport:</td>
-            <td *ngFor="let feature of topFeaturesToDisplay">{{feature.properties.AIR_km}} km / {{feature.properties.AIR_OEV}} min <span i18n>(public transport)</span></td>
+            <td *ngFor="let plot of topPlotsToDisplay">{{plot.properties.AIR_km}} km / {{plot.properties.AIR_OEV}} min <span i18n>(public transport)</span></td>
           </tr>
         </table>
       </div>
@@ -128,20 +128,20 @@
         <div class="progress-field selected">5</div>
       </div>
       <div class="row">
-        <app-radar-chart [chartDatas]="[selectedFeatureChartData, targetChartData]"></app-radar-chart>
+        <app-radar-chart [chartDatas]="[selectedPlotChartData, targetChartData]"></app-radar-chart>
         <div class="infotable" id="infotable5">
-          <table *ngIf="selectedFeature">
-            <tr><td><b>{{selectedFeature.properties.Adresse}}</b></td></tr>
-            <tr><td><img [src]="'./assets/' + selectedFeature.id + '.JPG'" class="infoimage" /></td></tr>
-            <tr><td><b i18n="@@Area_long">Area:</b> {{selectedFeature.properties.Gesamtarea}} m²</td><tr>
-            <tr><td><b i18n="@@Scientific_long">Scientific institutions within 3 km radius:</b> {{selectedFeature.properties.Scientific}}</td><tr>
-            <tr><td><b i18n="@@Hotels_long">Hotels within 1 km radius:</b> {{selectedFeature.properties.Hotels1km}}</td></tr>
-            <tr><td><b i18n="@@Gastronomy_long">Gastronomic establishments within 500 m radius:</b> {{selectedFeature.properties.Gastro}}</td></tr>
-            <tr><td><b i18n="@@Fitness_long">Fitness and wellness offers within 500 m radius:</b> {{selectedFeature.properties.Fitness}}</td></tr>
-            <tr><td><b i18n="@@Cultural_long">Cultural institutions within 3 km radius:</b> {{selectedFeature.properties.Kultur}}</td></tr>
-            <tr><td><b i18n="@@Greenspace_long">Greenspace and parks within 500 m radius:</b> {{selectedFeature.properties.Park_m2}} m²</td></tr>
-            <tr><td><b i18n="@@Transit_long">Nearest transit stop:</b> {{selectedFeature.properties.Bahn}} {{selectedFeature.properties.Bahn_m}} m / {{selectedFeature.properties.Bahn_min}} min <span i18n>by foot</span></td></tr>
-            <tr><td><b i18n="@@Airport_long">Distance to airport:</b> {{selectedFeature.properties.AIR_km}} km / {{selectedFeature.properties.AIR_OEV}} min <span i18n>by public transport</span></td></tr>
+          <table *ngIf="selectedPlot">
+            <tr><td><b>{{selectedPlot.properties.Adresse}}</b></td></tr>
+            <tr><td><img [src]="'./assets/' + selectedPlot.id + '.JPG'" class="infoimage" /></td></tr>
+            <tr><td><b i18n="@@Area_long">Area:</b> {{selectedPlot.properties.Gesamtarea}} m²</td><tr>
+            <tr><td><b i18n="@@Scientific_long">Scientific institutions within 3 km radius:</b> {{selectedPlot.properties.Scientific}}</td><tr>
+            <tr><td><b i18n="@@Hotels_long">Hotels within 1 km radius:</b> {{selectedPlot.properties.Hotels1km}}</td></tr>
+            <tr><td><b i18n="@@Gastronomy_long">Gastronomic establishments within 500 m radius:</b> {{selectedPlot.properties.Gastro}}</td></tr>
+            <tr><td><b i18n="@@Fitness_long">Fitness and wellness offers within 500 m radius:</b> {{selectedPlot.properties.Fitness}}</td></tr>
+            <tr><td><b i18n="@@Cultural_long">Cultural institutions within 3 km radius:</b> {{selectedPlot.properties.Kultur}}</td></tr>
+            <tr><td><b i18n="@@Greenspace_long">Greenspace and parks within 500 m radius:</b> {{selectedPlot.properties.Park_m2}} m²</td></tr>
+            <tr><td><b i18n="@@Transit_long">Nearest transit stop:</b> {{selectedPlot.properties.Bahn}} {{selectedPlot.properties.Bahn_m}} m / {{selectedPlot.properties.Bahn_min}} min <span i18n>by foot</span></td></tr>
+            <tr><td><b i18n="@@Airport_long">Distance to airport:</b> {{selectedPlot.properties.AIR_km}} km / {{selectedPlot.properties.AIR_OEV}} min <span i18n>by public transport</span></td></tr>
           </table>
         </div>
       </div>

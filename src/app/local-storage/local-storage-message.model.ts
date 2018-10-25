@@ -1,11 +1,11 @@
-import { Feature } from '../feature.model';
+import { Plot } from '../plot.model';
 import { RadarChartData } from '../radar-chart/radar-chart-data.model';
 
 export interface LocalStorageMessage {
   type: string;
   step?: number;
-  feature?: Feature;
-  topFeatures?: Feature[];
+  plot?: Plot;
+  topPlots?: Plot[];
   chartData?: RadarChartData;
   chartDatas?: RadarChartData[];
 }

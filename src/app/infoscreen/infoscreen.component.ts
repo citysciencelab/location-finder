@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { Feature } from '../feature.model';
+
+import { Plot } from '../plot.model';
 import { RadarChartData } from '../radar-chart/radar-chart-data.model';
 import { LocalStorageMessage } from '../local-storage/local-storage-message.model';
 
@@ -17,11 +18,11 @@ declare module 'chart.js' {
 })
 export class InfoscreenComponent {
   progress = 0;
-  selectedFeature: Feature;
-  selectedFeatureChartData: RadarChartData;
-  topFeatures: Feature[] = [];
-  topFeaturesToDisplay: Feature[] = [];
-  topFeaturesChartDatas: RadarChartData[] = [];
+  selectedPlot: Plot;
+  selectedPlotChartData: RadarChartData;
+  topPlots: Plot[] = [];
+  topPlotsToDisplay: Plot[] = [];
+  topPlotsChartDatas: RadarChartData[] = [];
   targetChartData: RadarChartData;
   comparisonChartOptions: Chart.ChartOptions = {
     legend: {
@@ -48,8 +49,8 @@ export class InfoscreenComponent {
 
   constructor() { }
 
-  isSelectedFeatureLocked() {
-    return this.selectedFeature && this.topFeatures.find(item => item.id === this.selectedFeature.id);
+  isSelectedPlotLocked() {
+    return this.selectedPlot && this.topPlots.find(item => item.id === this.selectedPlot.id);
   }
 
   receiveMapEvent(event: StorageEvent) {
@@ -66,21 +67,21 @@ export class InfoscreenComponent {
         this.progress = message.step;
         break;
 
-      case 'selectFeature':
-        if (!message.feature) {
+      case 'selectPlot':
+        if (!message.plot) {
           break;
         }
-        this.selectedFeature = message.feature;
-        this.selectedFeatureChartData = message.chartData;
+        this.selectedPlot = message.plot;
+        this.selectedPlotChartData = message.chartData;
         break;
 
-      case 'setTopFeatures':
-        if (!message.topFeatures) {
+      case 'setTopPlots':
+        if (!message.topPlots) {
           break;
         }
-        this.topFeatures = message.topFeatures;
-        this.topFeaturesToDisplay = this.topFeatures.slice(0, 3);
-        this.topFeaturesChartDatas = message.chartDatas;
+        this.topPlots = message.topPlots;
+        this.topPlotsToDisplay = this.topPlots.slice(0, 3);
+        this.topPlotsChartDatas = message.chartDatas;
         break;
 
       case 'setCriteria':
@@ -88,11 +89,11 @@ export class InfoscreenComponent {
         break;
 
       case 'computerSagt':
-        if (!message.feature) {
+        if (!message.plot) {
           break;
         }
-        this.selectedFeature = message.feature;
-        this.selectedFeatureChartData = message.chartData;
+        this.selectedPlot = message.plot;
+        this.selectedPlotChartData = message.chartData;
         break;
     }
   }

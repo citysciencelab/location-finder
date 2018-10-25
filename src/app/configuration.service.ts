@@ -9,7 +9,7 @@ export class ConfigurationService {
   progressMarkerID: number;
   selectionMarkerID: number;
   searchCriteria: SearchCriterion[];
-  tuioCursorEvents = true;
+  tuioCursorEvents: boolean;
 
   constructor() {
     this.baseLayers = config. baseLayers;

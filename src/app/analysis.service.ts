@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 
 import { ConfigurationService } from './configuration.service';
-import { Feature } from './feature.model';
+import { Plot } from './plot.model';
 import { RadarChartData } from './radar-chart/radar-chart-data.model';
 
 @Injectable()
 export class AnalysisService {
-  allFeatures: Feature[] = [];
-  topFeatures: Feature[] = [];
+  allPlots: Plot[] = [];
+  topPlots: Plot[] = [];
   maxValues: { [key: string]: number } = {};
   targetCriteria: RadarChartData;
 
@@ -18,14 +18,14 @@ export class AnalysisService {
     );
   }
 
-  setAllFeatures(features: Feature[]): void {
-    this.allFeatures = features;
+  setAllPlots(features: ol.Feature[]): void {
+    this.allPlots = features.map(feature => new Plot(feature));
   }
 
   calculateMaxValues(): void {
     this.config.searchCriteria.forEach(item => {
-      this.allFeatures.forEach(feature => {
-        this.maxValues[item.key] = Math.max(this.maxValues[item.key] || 0, parseInt(feature.properties[item.key], 10) || 0);
+      this.allPlots.forEach(plot => {
+        this.maxValues[item.key] = Math.max(this.maxValues[item.key] || 0, parseInt(plot.properties[item.key], 10) || 0);
       });
     });
   }
@@ -35,51 +35,38 @@ export class AnalysisService {
     this.targetCriteria = new RadarChartData(this.targetCriteria.className, this.targetCriteria.axes);
   }
 
-  lockFeature(feature: Feature): void {
-    console.log('lock');
-    this.topFeatures.push(feature);
-    feature.olFeature.setStyle(feature.layer.olExtraStyleFn);
+  lockPlot(plot: Plot): void {
+    this.topPlots.push(plot);
   }
 
-  unlockFeature(feature: Feature): void {
-    console.log('unlock');
-    this.topFeatures.splice(this.topFeatures.indexOf(feature), 1);
-    feature.olFeature.setStyle(feature.layer.olSelectedStyleFn);
+  unlockPlot(plot: Plot): void {
+    this.topPlots.splice(this.topPlots.findIndex(item => item.id === plot.id), 1);
   }
 
-  toggleLockFeature(feature: Feature): void {
-    const alreadyLocked = this.topFeatures.find(item => item.id === feature.id);
-    if (alreadyLocked) {
-      this.unlockFeature(feature);
-    } else {
-      this.lockFeature(feature);
-    }
-  }
-
-  normalizeLocationValues(feature: Feature): { name: string; value: number }[] {
+  normalizeLocationValues(plot: Plot): { name: string; value: number }[] {
     if (!this.maxValues || this.maxValues.length === 0) {
       throw new Error('max values are not defined');
     }
 
     return this.config.searchCriteria.map(item => ({
       name: item.key,
-      value: feature.properties[item.key] / this.maxValues[item.key]
+      value: plot.properties[item.key] / this.maxValues[item.key]
     }));
   }
 
-  findTopFeatureById(id: string | number): Feature {
-    return this.topFeatures.find(item => item.id === id);
+  findTopPlotById(id: string | number): Plot {
+    return this.topPlots.find(item => item.id === id);
   }
 
   /*
-   * Returns the feature whose properties exhibit the greatest similarity with the targetCriteria
+   * Returns the plot whose properties exhibit the greatest similarity with the targetCriteria
    */
-  computerSagt(): Feature {
+  getBestPlot(): Plot {
     let minEuclideanDistance = Infinity;
-    let topFeature: Feature;
+    let bestPlot: Plot;
 
-    for (const feature of this.allFeatures) {
-      const normalizedValues = this.normalizeLocationValues(feature);
+    for (const plot of this.allPlots) {
+      const normalizedValues = this.normalizeLocationValues(plot);
       const sum = normalizedValues
         .map(axis => {
           const targetAxis = this.targetCriteria.findAxisByKey(axis.name);
@@ -90,10 +77,10 @@ export class AnalysisService {
 
       if (euclideanDistance < minEuclideanDistance) {
         minEuclideanDistance = euclideanDistance;
-        topFeature = feature;
+        bestPlot = plot;
       }
     }
 
-    return topFeature;
+    return bestPlot;
   }
 }

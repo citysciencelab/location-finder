@@ -2,14 +2,13 @@ import { Injectable } from '@angular/core';
 import * as ol from 'openlayers';
 
 import { ConfigurationService } from '../configuration.service';
-import { Feature } from '../feature.model';
 
 @Injectable()
 export class MapService {
-  private map: ol.Map;
-  private geoJSON = new ol.format.GeoJSON();
   baseLayers: MapLayer[];
   topicLayers: MapLayer[];
+  mapFeaturesById: { [key: string]: ol.Feature } = {};
+  private map: ol.Map;
 
   constructor(private config: ConfigurationService) {
     this.map = new ol.Map({
@@ -54,21 +53,20 @@ export class MapService {
     );
   }
 
-  featureBufferContainsCoordinate(feature: ol.Feature, coordinate: ol.Coordinate): boolean {
+  featureBufferContainsCoordinate(featureId: string | number, coordinate: ol.Coordinate): boolean {
+    const feature = this.mapFeaturesById[featureId];
     const buffer = ol.extent.buffer(feature.getGeometry().getExtent(), 100);
     return ol.extent.containsCoordinate(buffer, coordinate);
   }
 
-  flattenFeature(feature: ol.Feature, layer: MapLayer): Feature {
-    const flatFeature = this.featureToJSON(feature);
-    flatFeature.layer = layer;
-    flatFeature.properties = feature.getProperties();
-    flatFeature.olFeature = feature;
-    return flatFeature;
+  applySelectedStyle(featureId: string | number, layer: MapLayer) {
+    const feature = this.mapFeaturesById[featureId];
+    feature.setStyle(layer.olSelectedStyleFn);
   }
 
-  featureToJSON(feature: ol.Feature): Feature {
-    return <Feature>JSON.parse(this.geoJSON.writeFeature(feature));
+  applyExtraStyle(featureId: string | number, layer: MapLayer) {
+    const feature = this.mapFeaturesById[featureId];
+    feature.setStyle(layer.olExtraStyleFn);
   }
 
   // Conversion from display XY to map coordinates
@@ -127,10 +125,10 @@ export class MapService {
   /*
    * Zoom out, fly to the feature, zoom in
    */
-  zoomToFeature(feature: ol.Feature, zoom1: number, zoom2: number): void {
+  zoomTo(coordinate: ol.Coordinate, zoom1: number, zoom2: number): void {
     this.map.getView().animate(
       { zoom: zoom1 },
-      { center: this.getFeatureCenterpoint(feature) },
+      { center: coordinate },
       { zoom: zoom2 }
     );
   }

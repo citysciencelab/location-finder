@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Feature } from '../feature.model';
+
+import { Plot } from '../plot.model';
 import { RadarChartData } from '../radar-chart/radar-chart-data.model';
 import { LocalStorageMessage } from './local-storage-message.model';
 
@@ -24,28 +25,28 @@ export class LocalStorageService {
     this.sendMessage(message);
   }
 
-  sendSelectFeature(selectedFeature: Feature, criteriaForRadarChart: RadarChartData) {
+  sendSelectPlot(selectedPlot: Plot, criteriaForRadarChart: RadarChartData) {
     const message = {
-      type: 'selectFeature',
-      feature: selectedFeature,
+      type: 'selectPlot',
+      plot: selectedPlot,
       chartData: criteriaForRadarChart
     };
     this.sendMessage(message);
   }
 
-  sendSetTopFeatures(topFeatures: Feature[], chartDatas: RadarChartData[]) {
+  sendSetTopPlots(topPlots: Plot[], chartDatas: RadarChartData[]) {
     const message = {
-      type: 'setTopFeatures',
-      topFeatures: topFeatures,
+      type: 'setTopPlots',
+      topPlots: topPlots,
       chartDatas: chartDatas
     };
     this.sendMessage(message);
   }
 
-  sendComputerSagt(feature: Feature, chartData: RadarChartData) {
+  sendComputerSagt(plot: Plot, chartData: RadarChartData) {
     const message = {
       type: 'computerSagt',
-      feature: feature,
+      plot: plot,
       chartData: chartData
     };
     this.sendMessage(message);

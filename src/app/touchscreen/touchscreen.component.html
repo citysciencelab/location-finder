@@ -3,7 +3,7 @@
     <img src="./assets/LocationFinderLogo.png" />
   </div>
 
-  <app-map *ngIf="currentStepHasMap"></app-map>
+  <app-map [class.hidden]="!currentStepHasMap" (selectFeature)="onSelectFeature($event)" (toggleLockFeature)="onToggleLockFeature($event)"></app-map>
 
   <app-canvas *ngIf="currentStepHasCanvas" [targetCriteria]="analysisService.targetCriteria" [activeMarkers]="activeMarkers"></app-canvas>
 

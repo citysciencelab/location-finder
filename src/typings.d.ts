@@ -97,6 +97,7 @@ declare interface Config {
   progressMarkerID: number;
   selectionMarkerID: number;
   searchCriteria: SearchCriterion[];
+  enableTuio: boolean;
   tuioCursorEvents?: boolean;
 }
 
