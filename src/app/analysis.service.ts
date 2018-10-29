@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable, LOCALE_ID } from '@angular/core';
 
 import { ConfigurationService } from './configuration.service';
 import { Plot } from './plot.model';
@@ -11,10 +11,16 @@ export class AnalysisService {
   maxValues: { [key: string]: number } = {};
   targetCriteria: RadarChartData;
 
-  constructor(private config: ConfigurationService) {
+  constructor(@Inject(LOCALE_ID) private locale, private config: ConfigurationService) {
     this.targetCriteria = new RadarChartData(
       'target-values',
-      this.config.searchCriteria.map(item => ({ name: item.key, color: item.color, value: 0, sliderValue: 0 }))
+      this.config.searchCriteria.map(item => ({
+        name: item.key,
+        displayName: item['name_' + this.locale],
+        color: item.color,
+        value: 0,
+        sliderValue: 0
+      }))
     );
   }
 

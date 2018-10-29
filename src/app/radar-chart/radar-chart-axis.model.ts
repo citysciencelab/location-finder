@@ -1,5 +1,6 @@
 export interface RadarChartAxis {
   name: string;
+  displayName: string;
   value: number;
   sliderValue: number;
   color: string;
