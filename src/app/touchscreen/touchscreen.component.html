@@ -10,7 +10,10 @@
   <div *ngIf="showSliders" class="sliders">
     <div *ngFor="let axis of analysisService.targetCriteria.axes" class="slider-container">
       <span class="slider-label">{{ axis.name }}: {{ axis.sliderValue }}</span>
-      <input type="range" min="0" max="{{ analysisService.maxValues[axis.name] }}" [value]="axis.sliderValue" class="slider" (input)="onSliderInput(axis, $event)">
+      <input type="range" min="0" max="{{ analysisService.maxValues[axis.name] }}" [value]="axis.sliderValue" class="slider" (input)="onSliderInput(axis, $event)" />
+      <div class="slider-thumb-container">
+        <div class="slider-thumb" [style.left]="100 * axis.value + '%'" [style.backgroundColor]="'rgb(' + axis.color + ')'"></div>
+      </div>
     </div>
   </div>
 

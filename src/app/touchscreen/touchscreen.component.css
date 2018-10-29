@@ -16,7 +16,8 @@
 }
 
 .slider-container {
-  padding: 25px 50px;
+  position: relative;
+  margin: 25px 50px;
 }
 
 .slider {
@@ -37,7 +38,6 @@
   width: 25px;
   height: 25px;
   border-radius: 50%;
-  background: #4CAF50;
   cursor: pointer;
 }
 
@@ -45,8 +45,23 @@
   width: 25px;
   height: 25px;
   border-radius: 50%;
-  background: #4CAF50;
+  opacity: 0;
   cursor: pointer;
+}
+
+.slider-thumb-container {
+  position: absolute;
+  bottom: -2px;
+  width: calc(100% - 25px);
+  height: 25px;
+  pointer-events: none;
+}
+
+.slider-thumb {
+  position: absolute;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
 }
 
 .slider-label {
