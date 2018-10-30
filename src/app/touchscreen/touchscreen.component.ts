@@ -22,7 +22,6 @@ export class TouchscreenComponent implements OnInit {
   showCanvas: boolean;
   showSliders: boolean;
   private initialAngle: number;
-  private initialLocked: boolean;
   private lastSelectedPlot: Plot;
   private bestPlot: Plot;
   private activeMarkers: number[] = [];
@@ -61,15 +60,19 @@ export class TouchscreenComponent implements OnInit {
     }
   }
 
+  onAddObject(evt: CustomEvent) {
+    evt.stopPropagation();
+
+    const object = evt.detail;
+
+    this.activeMarkers.push(object.classId);
+  }
+
   onUpdateObject(evt: CustomEvent) {
     evt.stopPropagation();
 
     const target = <Element>evt.target;
     const object = evt.detail;
-
-    if (event.type === 'addobject') {
-      this.activeMarkers.push(object.classId);
-    }
 
     const adjustableCriterion = this.findCriterionByMarkerId(object.classId);
 
@@ -105,15 +108,12 @@ export class TouchscreenComponent implements OnInit {
         if (!coordinate) {
           return;
         }
-        const changedPlot = this.mapService.getSelectedFeatures(coordinate)[0];
+        const selected = this.mapService.getSelectedFeatures(coordinate)[0];
 
-        if (changedPlot) {
-          this.mapService.dispatchSelectEvent(this.sitesLayer, [changedPlot], coordinate);
-
+        // If a plot has been selected that hasn't been selected before ...
+        if (selected && !this.lastSelectedPlot || selected && selected.getId() !== this.lastSelectedPlot.id) {
+          this.mapService.dispatchSelectEvent(this.sitesLayer, [selected], coordinate);
           this.initialAngle = object.aAngle;
-          // FIXME unnecessary assignment
-          this.initialLocked = !!this.analysisService.findTopPlotById(changedPlot.getId());
-          this.initialLocked = false;
         }
         if (!this.lastSelectedPlot) {
           return;
@@ -133,14 +133,12 @@ export class TouchscreenComponent implements OnInit {
         }
         const doChange = relativeAngle >= Math.PI;
 
-        if (this.initialLocked && plotIsTopPlot && doChange ||
-          !this.initialLocked && plotIsTopPlot && !doChange) {
+        if (plotIsTopPlot && !doChange) {
           this.analysisService.topPlots.splice(this.analysisService.topPlots.indexOf(this.lastSelectedPlot), 1);
           this.analysisService.unlockPlot(this.lastSelectedPlot);
           this.mapService.applySelectedStyle(this.lastSelectedPlot.id, this.sitesLayer);
         }
-        if (this.initialLocked && !plotIsTopPlot && !doChange ||
-          !this.initialLocked && !plotIsTopPlot && doChange) {
+        if (!plotIsTopPlot && doChange) {
           this.analysisService.topPlots.push(this.lastSelectedPlot);
           this.analysisService.lockPlot(this.lastSelectedPlot);
           this.mapService.applyExtraStyle(this.lastSelectedPlot.id, this.sitesLayer);
@@ -171,6 +169,7 @@ export class TouchscreenComponent implements OnInit {
 
   onSelectFeature(olFeature: ol.Feature) {
     const plot = this.analysisService.allPlots.find(item => item.id === olFeature.getId());
+    this.lastSelectedPlot = plot;
     this.sendSelectPlot(plot);
   }
 
