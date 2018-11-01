@@ -3,7 +3,7 @@
     <img src="./assets/LocationFinderLogo.png" />
   </div>
 
-  <app-map [class.hidden]="showCanvas" (selectFeature)="onSelectFeature($event)" (toggleLockFeature)="onToggleLockFeature($event)"></app-map>
+  <app-map [class.hidden]="showCanvas" (selectFeature)="onSelectFeature($event)" (deselectFeatures)="onDeselectFeatures($event)" (toggleLockFeature)="onToggleLockFeature($event)"></app-map>
 
   <app-canvas *ngIf="showCanvas" [targetCriteria]="analysisService.targetCriteria" [activeMarkers]="activeMarkers"></app-canvas>
 

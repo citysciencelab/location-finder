@@ -60,6 +60,9 @@ export class TouchscreenComponent implements OnInit {
     }
   }
 
+  /*
+   * When a TUIO object is added
+   */
   onAddObject(evt: CustomEvent) {
     evt.stopPropagation();
 
@@ -68,6 +71,9 @@ export class TouchscreenComponent implements OnInit {
     this.activeMarkers.push(object.classId);
   }
 
+  /*
+   * When a TUIO object is updated
+   */
   onUpdateObject(evt: CustomEvent) {
     evt.stopPropagation();
 
@@ -104,13 +110,18 @@ export class TouchscreenComponent implements OnInit {
         if (this.currentStep !== 3) {
           break;
         }
+
         const coordinate = this.mapService.getCoordinateFromXY(object.xPosition, object.yPosition);
         if (!coordinate) {
           return;
         }
-        const selected = this.mapService.getSelectedFeatures(coordinate)[0];
 
-        // If a plot has been selected that hasn't been selected before ...
+        const selected = this.mapService.getSelectedFeatures(coordinate)[0];
+        if (!selected) {
+          return;
+        }
+
+        // If a plot is selected that hasn't been selected before ...
         if (selected && !this.lastSelectedPlot || selected && selected.getId() !== this.lastSelectedPlot.id) {
           this.mapService.dispatchSelectEvent(this.sitesLayer, [selected], coordinate);
           this.initialAngle = object.aAngle;
@@ -124,33 +135,21 @@ export class TouchscreenComponent implements OnInit {
           return;
         }
 
-        const plotIsTopPlot = !!this.analysisService.findTopPlotById(this.lastSelectedPlot.id);
-
         // Lock/unlock at a 1/4 marker rotation clockwise or anticlockwise
-        let relativeAngle = object.aAngle - this.initialAngle + Math.PI / 2;
-        if (relativeAngle < 0) {
-          relativeAngle += 2 * Math.PI;
-        }
-        const doChange = relativeAngle >= Math.PI;
+        // (this is the case when the change of angle exceeds PI/2 in either direction)
+        const relativeAngle = object.aAngle - this.initialAngle;
 
-        if (plotIsTopPlot && !doChange) {
-          this.analysisService.topPlots.splice(this.analysisService.topPlots.indexOf(this.lastSelectedPlot), 1);
-          this.analysisService.unlockPlot(this.lastSelectedPlot);
-          this.mapService.applySelectedStyle(this.lastSelectedPlot.id, this.sitesLayer);
+        if (relativeAngle >= Math.PI / 2 || relativeAngle < -Math.PI / 2) {
+          this.onToggleLockFeature(selected);
+          // reset
+          this.initialAngle = object.aAngle;
         }
-        if (!plotIsTopPlot && doChange) {
-          this.analysisService.topPlots.push(this.lastSelectedPlot);
-          this.analysisService.lockPlot(this.lastSelectedPlot);
-          this.mapService.applyExtraStyle(this.lastSelectedPlot.id, this.sitesLayer);
-        }
-
-        this.localStorageService.sendSetTopPlots(
-          this.analysisService.topPlots,
-          this.analysisService.topPlots.map(this.plotToRadarChartData, this)
-        );
     }
   }
 
+  /*
+   * When a TUIO object is removed
+   */
   onRemoveObject(evt: CustomEvent) {
     evt.stopPropagation();
 
@@ -168,21 +167,40 @@ export class TouchscreenComponent implements OnInit {
   }
 
   onSelectFeature(olFeature: ol.Feature) {
-    const plot = this.analysisService.allPlots.find(item => item.id === olFeature.getId());
+    const featureId = olFeature.getId();
+    if (this.analysisService.topPlots.find(item => item.id === featureId)) {
+      this.mapService.applyExtraStyle(featureId, this.sitesLayer);
+    } else {
+      this.mapService.applySelectedStyle(featureId, this.sitesLayer);
+    }
+
+    const plot = this.analysisService.allPlots.find(item => item.id === featureId);
     this.lastSelectedPlot = plot;
     this.sendSelectPlot(plot);
   }
 
+  onDeselectFeatures(olFeatures: ol.Feature[]) {
+    olFeatures.forEach(olFeature => {
+      const featureId = olFeature.getId();
+      if (this.analysisService.topPlots.find(item => item.id === featureId)) {
+        this.mapService.applyExtraStyle(featureId, this.sitesLayer);
+      } else {
+        this.mapService.applyDefaultStyle(featureId, this.sitesLayer);
+      }
+    });
+  }
+
   onToggleLockFeature(olFeature: ol.Feature) {
-    const plot = this.analysisService.allPlots.find(item => item.id === olFeature.getId());
-    const locked = !!this.analysisService.topPlots.find(item => item.id === olFeature.getId());
+    const featureId = olFeature.getId();
+    const plot = this.analysisService.findPlotById(featureId);
+    const locked = !!this.analysisService.findTopPlotById(featureId);
 
     if (locked) {
       this.analysisService.unlockPlot(plot);
-      this.mapService.applySelectedStyle(olFeature.getId(), this.sitesLayer);
+      this.mapService.applySelectedStyle(featureId, this.sitesLayer);
     } else {
       this.analysisService.lockPlot(plot);
-      this.mapService.applyExtraStyle(olFeature.getId(), this.sitesLayer);
+      this.mapService.applyExtraStyle(featureId, this.sitesLayer);
     }
     this.sendTopPlots();
   }

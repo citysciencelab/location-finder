@@ -10,6 +10,7 @@ import { AnalysisService } from '../analysis.service';
 })
 export class MapComponent implements OnInit {
   @Output() private selectFeature = new EventEmitter<ol.Feature>();
+  @Output() private deselectFeatures = new EventEmitter<ol.Feature[]>();
   @Output() private toggleLockFeature = new EventEmitter<ol.Feature>();
 
   constructor(private mapService: MapService, private analysisService: AnalysisService) { }
@@ -38,14 +39,15 @@ export class MapComponent implements OnInit {
       this.analysisService.calculateMaxValues();
     });
 
-    // Emit an event when a site is selected
+    // Emit select/deselect events when a site is selected
     sitesLayer.olSelectInteraction.on('select', (evt: ol.interaction.Select.Event) => {
       evt.selected.forEach(feature => {
         this.selectFeature.emit(feature);
       });
+      this.deselectFeatures.emit(evt.deselected);
     });
 
-    // Emit an event when a site is locked (by doubleclick)
+    // Emit an event when a site is doubleclicked
     this.mapService.on('dblclick', (evt: ol.MapBrowserEvent) => {
       const feature = sitesSource.getFeaturesAtCoordinate(evt.coordinate)[0];
 

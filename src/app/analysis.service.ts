@@ -49,15 +49,6 @@ export class AnalysisService {
     this.topPlots.splice(this.topPlots.findIndex(item => item.id === plot.id), 1);
   }
 
-  // normalizeTargetValues(): { name: string; value: number }[] {
-  //   if (!this.maxValues || this.maxValues.length === 0) {
-  //     throw new Error('max values are not defined');
-  //   }
-  //
-  //
-  //   return this.targetCriteria;
-  // }
-
   normalizeLocationValues(plot: Plot): { name: string; value: number }[] {
     if (!this.maxValues || this.maxValues.length === 0) {
       throw new Error('max values are not defined');
@@ -67,6 +58,10 @@ export class AnalysisService {
       name: item.key,
       value: plot.properties[item.key] / this.maxValues[item.key]
     }));
+  }
+
+  findPlotById(id: string | number): Plot {
+    return this.allPlots.find(item => item.id === id);
   }
 
   findTopPlotById(id: string | number): Plot {

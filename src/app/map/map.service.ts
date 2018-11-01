@@ -59,6 +59,11 @@ export class MapService {
     return ol.extent.containsCoordinate(buffer, coordinate);
   }
 
+  applyDefaultStyle(featureId: string | number, layer: MapLayer) {
+    const feature = this.mapFeaturesById[featureId];
+    feature.setStyle(layer.olDefaultStyleFn);
+  }
+
   applySelectedStyle(featureId: string | number, layer: MapLayer) {
     const feature = this.mapFeaturesById[featureId];
     feature.setStyle(layer.olSelectedStyleFn);
@@ -149,10 +154,6 @@ export class MapService {
       }
     };
     layer.olSelectInteraction.dispatchEvent(selectEvent);
-
-    // Apply appropriate styles to selected and deselected features
-    selected.forEach(feature => feature.setStyle(layer.olSelectedStyleFn));
-    deselected.forEach(feature => feature.setStyle(layer.olDefaultStyleFn));
   }
 
   private addLayers(baseLayersConfig: MapLayer[], topicLayersConfig: MapLayer[]): void {
