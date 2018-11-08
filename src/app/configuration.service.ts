@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+
 import config from './config.json';
 
 @Injectable()

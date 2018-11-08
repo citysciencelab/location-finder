@@ -1,6 +1,6 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 
-import { MapService } from './map.service';
+import * as olcs from 'ol-cityscope';
 import { AnalysisService } from '../analysis.service';
 
 @Component({
@@ -13,18 +13,18 @@ export class MapComponent implements OnInit {
   @Output() private deselectFeatures = new EventEmitter<ol.Feature[]>();
   @Output() private toggleLockFeature = new EventEmitter<ol.Feature>();
 
-  constructor(private mapService: MapService, private analysisService: AnalysisService) { }
+  constructor(private map: olcs.Map, private analysisService: AnalysisService) { }
 
   ngOnInit() {
-    this.mapService.setTarget('map');
-    this.mapService.setView([9.99, 53.55], 11, 1, 18);
+    this.map.setTarget('map');
+    this.map.setView([9.99, 53.55], 11, 1, 18);
 
     this.registerListeners();
   }
 
   private registerListeners(): void {
-    const sitesLayer = this.mapService.getTopicLayerByName('sites');
-    const sitesSource = this.mapService.getVectorLayerSource(sitesLayer);
+    const sitesLayer = this.map.getTopicLayerByName('sites');
+    const sitesSource = olcs.getVectorLayerSource(sitesLayer);
     if (!sitesSource) {
       return;
     }
@@ -33,7 +33,7 @@ export class MapComponent implements OnInit {
     sitesLayer.olLayer.getSource().on('change', (evt: ol.events.Event) => {
       const features = (<ol.source.Vector>evt.target).getFeatures();
       for (const feature of features) {
-        this.mapService.mapFeaturesById[feature.getId()] = feature;
+        this.map.mapFeaturesById[feature.getId()] = feature;
       }
       this.analysisService.setAllPlots(features);
       this.analysisService.calculateMaxValues();
@@ -48,7 +48,7 @@ export class MapComponent implements OnInit {
     });
 
     // Emit an event when a site is doubleclicked
-    this.mapService.on('dblclick', (evt: ol.MapBrowserEvent) => {
+    this.map.on('dblclick', (evt: ol.MapBrowserEvent) => {
       const feature = sitesSource.getFeaturesAtCoordinate(evt.coordinate)[0];
 
       if (feature) {

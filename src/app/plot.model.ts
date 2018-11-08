@@ -1,4 +1,4 @@
-import * as ol from 'openlayers';
+import * as olcs from 'ol-cityscope';
 
 export class Plot {
   id: string | number;
@@ -16,7 +16,7 @@ export class Plot {
         }
         this.properties[key] = value;
       }
-      this.centerpoint = ol.extent.getCenter(feature.getGeometry().getExtent());
+      this.centerpoint = olcs.getFeatureCenterpoint(feature);
     }
   }
 }

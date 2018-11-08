@@ -4,6 +4,7 @@ interface NodeModule {
   id: string;
 }
 
+// Workaround for typings that don't get properly imported from ol-cityscope
 declare interface Source {
   url?: string;
   projection?: string;
@@ -53,16 +54,13 @@ declare interface LayerStyle {
 declare interface MapLayer {
   name: string;
   displayName: string;
-  topic?: string;
   type: 'WMS' | 'OSM' | 'Tile' | 'Vector' | 'Heatmap';
-  source?: Source;
-  // Heatmap
+  source: Source;
   weightAttribute?: string;
   weightAttributeMax?: number;
   gradient?: string[];
   radius?: number;
   blur?: number;
-  // all types
   opacity?: number;
   zIndex?: number;
   visible: boolean;
@@ -75,13 +73,13 @@ declare interface MapLayer {
   extraStyle?: LayerStyle;
   scale?: { [key: string]: ol.Color };
   scaleAttribute?: string;
-  // No config - assigned at runtime
   olLayer?: ol.layer.Layer;
   olDefaultStyleFn?: ol.StyleFunction;
   olSelectedStyleFn?: ol.StyleFunction;
   olExtraStyleFn?: ol.StyleFunction;
   olSelectInteraction?: ol.interaction.Select;
 }
+// End of Workaround
 
 declare interface SearchCriterion {
   key: string;

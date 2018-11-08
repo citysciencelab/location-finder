@@ -25,7 +25,7 @@
     "@angular/router": "^6.1.9",
     "chart.js": "^2.7.2",
     "core-js": "^2.5.7",
-    "openlayers": "^4.6.5",
+    "ol-cityscope": "git+https://git.csl-intern.local.hcu-hamburg.de/cityscope/ol-cityscope",
     "rxjs": "^6.3.3",
     "tuio-client": "git+https://git.csl-intern.local.hcu-hamburg.de/cityscope/tuio-client",
     "zone.js": "^0.8.26"
@@ -39,7 +39,7 @@
     "@types/jasmine": "^2.8.9",
     "@types/jasminewd2": "^2.0.5",
     "@types/node": "^10.11.4",
-    "@types/openlayers": "^4.6.12",
+    "@types/ol": "^4.6.2",
     "codelyzer": "^4.4.4",
     "jasmine-core": "^3.2.1",
     "jasmine-spec-reporter": "^4.2.1",

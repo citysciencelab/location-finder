@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { TuioClient } from 'tuio-client';
+import * as olcs from 'ol-cityscope';
 
 import { environment } from '../../environments/environment';
 import { ConfigurationService } from '../configuration.service';
 import { LocalStorageService } from '../local-storage/local-storage.service';
-import { MapService } from '../map/map.service';
 import { AnalysisService } from '../analysis.service';
 import { Plot } from '../plot.model';
 import { RadarChartData } from '../radar-chart/radar-chart-data.model';
@@ -28,10 +28,10 @@ export class TouchscreenComponent implements OnInit {
   private sitesLayer: MapLayer;
 
   constructor(private config: ConfigurationService, private localStorageService: LocalStorageService, private tuioClient: TuioClient,
-    private mapService: MapService, private analysisService: AnalysisService) { }
+    private map: olcs.Map, private analysisService: AnalysisService) { }
 
   ngOnInit() {
-    this.sitesLayer = this.mapService.getTopicLayerByName('sites');
+    this.sitesLayer = this.map.getTopicLayerByName('sites');
 
     if (this.config.enableTuio) {
       this.tuioClient.connect(environment.socketUrl);
@@ -52,7 +52,7 @@ export class TouchscreenComponent implements OnInit {
 
     if (step === 5 && !this.bestPlot) {
       this.bestPlot = this.analysisService.getBestPlot();
-      this.mapService.zoomTo(this.bestPlot.centerpoint, 13, 17);
+      this.map.zoomTo(this.bestPlot.centerpoint, 13, 17);
       this.localStorageService.sendComputerSagt(
         this.bestPlot,
         this.plotToRadarChartData(this.bestPlot)
@@ -111,19 +111,19 @@ export class TouchscreenComponent implements OnInit {
           break;
         }
 
-        const coordinate = this.mapService.getCoordinateFromXY(object.xPosition, object.yPosition);
+        const coordinate = this.map.getCoordinateFromXY(object.xPosition, object.yPosition);
         if (!coordinate) {
           return;
         }
 
-        const selected = this.mapService.getSelectedFeatures(coordinate)[0];
+        const selected = this.map.getSelectedFeatures(coordinate)[0];
         if (!selected) {
           return;
         }
 
         // If a plot is selected that hasn't been selected before ...
         if (selected && !this.lastSelectedPlot || selected && selected.getId() !== this.lastSelectedPlot.id) {
-          this.mapService.dispatchSelectEvent(this.sitesLayer, [selected], coordinate);
+          olcs.dispatchSelectEvent(this.sitesLayer, [selected], coordinate);
           this.initialAngle = object.aAngle;
         }
         if (!this.lastSelectedPlot) {
@@ -131,7 +131,7 @@ export class TouchscreenComponent implements OnInit {
         }
 
         // Make sure the lock mechanism only works while the marker is near the geometry
-        if (!this.mapService.featureBufferContainsCoordinate(this.lastSelectedPlot.id, coordinate)) {
+        if (!this.map.featureBufferContainsCoordinate(this.lastSelectedPlot.id, coordinate)) {
           return;
         }
 
@@ -169,9 +169,9 @@ export class TouchscreenComponent implements OnInit {
   onSelectFeature(olFeature: ol.Feature) {
     const featureId = olFeature.getId();
     if (this.analysisService.topPlots.find(item => item.id === featureId)) {
-      this.mapService.applyExtraStyle(featureId, this.sitesLayer);
+      this.map.applyExtraStyle(featureId, this.sitesLayer);
     } else {
-      this.mapService.applySelectedStyle(featureId, this.sitesLayer);
+      this.map.applySelectedStyle(featureId, this.sitesLayer);
     }
 
     const plot = this.analysisService.allPlots.find(item => item.id === featureId);
@@ -183,9 +183,9 @@ export class TouchscreenComponent implements OnInit {
     olFeatures.forEach(olFeature => {
       const featureId = olFeature.getId();
       if (this.analysisService.topPlots.find(item => item.id === featureId)) {
-        this.mapService.applyExtraStyle(featureId, this.sitesLayer);
+        this.map.applyExtraStyle(featureId, this.sitesLayer);
       } else {
-        this.mapService.applyDefaultStyle(featureId, this.sitesLayer);
+        this.map.applyDefaultStyle(featureId, this.sitesLayer);
       }
     });
   }
@@ -197,10 +197,10 @@ export class TouchscreenComponent implements OnInit {
 
     if (locked) {
       this.analysisService.unlockPlot(plot);
-      this.mapService.applySelectedStyle(featureId, this.sitesLayer);
+      this.map.applySelectedStyle(featureId, this.sitesLayer);
     } else {
       this.analysisService.lockPlot(plot);
-      this.mapService.applyExtraStyle(featureId, this.sitesLayer);
+      this.map.applyExtraStyle(featureId, this.sitesLayer);
     }
     this.sendTopPlots();
   }
