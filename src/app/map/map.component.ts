@@ -1,6 +1,6 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-
 import * as olcs from 'ol-cityscope';
+
 import { AnalysisService } from '../analysis.service';
 
 @Component({
@@ -18,12 +18,14 @@ export class MapComponent implements OnInit {
   ngOnInit() {
     this.map.setTarget('map');
     this.map.setView([9.99, 53.55], 11, 1, 18);
-
     this.registerListeners();
   }
 
   private registerListeners(): void {
     const sitesLayer = this.map.getTopicLayerByName('sites');
+    if (!sitesLayer) {
+      throw new Error('Site layer is missing');
+    }
     const sitesSource = olcs.getVectorLayerSource(sitesLayer);
     if (!sitesSource) {
       return;

@@ -1,5 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { ConfigurationService } from '../configuration.service';
+import { AnalysisService } from '../analysis.service';
 import { CanvasComponent } from './canvas.component';
 
 describe('CanvasComponent', () => {
@@ -8,9 +10,12 @@ describe('CanvasComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CanvasComponent ]
-    })
-    .compileComponents();
+      declarations: [CanvasComponent],
+      providers: [
+        ConfigurationService,
+        AnalysisService
+      ]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

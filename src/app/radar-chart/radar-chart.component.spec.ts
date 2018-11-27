@@ -1,5 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { ConfigurationService } from '../configuration.service';
 import { RadarChartComponent } from './radar-chart.component';
 
 describe('RadarChartComponent', () => {
@@ -8,9 +9,11 @@ describe('RadarChartComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ RadarChartComponent ]
-    })
-    .compileComponents();
+      declarations: [RadarChartComponent],
+      providers: [
+        ConfigurationService
+      ]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

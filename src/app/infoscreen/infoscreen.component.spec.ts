@@ -1,5 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { RadarChartComponent } from '../radar-chart/radar-chart.component';
 import { InfoscreenComponent } from './infoscreen.component';
 
 describe('InfoscreenComponent', () => {
@@ -8,9 +9,8 @@ describe('InfoscreenComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ InfoscreenComponent ]
-    })
-    .compileComponents();
+      declarations: [InfoscreenComponent, RadarChartComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

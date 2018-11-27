@@ -31,10 +31,11 @@ export class CanvasComponent implements AfterViewInit, OnChanges {
   }
 
   refresh() {
-    // Dynamically size the canvas so it matches the main-container div
-    if (!this.mainContainerRef) {
+    if (!this.mainContainerRef || !this.targetCriteria) {
       return;
     }
+
+    // Dynamically size the canvas so it matches the main-container div
     this.width = this.mainContainerRef.nativeElement.offsetWidth;
     this.height = this.mainContainerRef.nativeElement.offsetHeight;
 
