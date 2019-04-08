@@ -26,13 +26,11 @@ export class MapComponent implements OnInit {
     if (!sitesLayer) {
       throw new Error('Site layer is missing');
     }
-    const sitesSource = olcs.getVectorLayerSource(sitesLayer);
-    if (!sitesSource) {
-      return;
-    }
+    const sitesOlLayer = sitesLayer.olLayers['*'];
+    const sitesSource = <ol.source.Vector>sitesOlLayer.layer.getSource();
 
     // When the site layer is added, keep track of the map features. We'll need them later
-    sitesLayer.olLayer.getSource().on('change', (evt: ol.events.Event) => {
+    sitesOlLayer.layer.getSource().on('change', (evt: ol.events.Event) => {
       const features = (<ol.source.Vector>evt.target).getFeatures();
       for (const feature of features) {
         this.map.mapFeaturesById[feature.getId()] = feature;
@@ -42,7 +40,7 @@ export class MapComponent implements OnInit {
     });
 
     // Emit select/deselect events when a site is selected
-    sitesLayer.olSelectInteraction.on('select', (evt: ol.interaction.Select.Event) => {
+    sitesOlLayer.selectInteraction.on('select', (evt: ol.interaction.Select.Event) => {
       evt.selected.forEach(feature => {
         this.selectFeature.emit(feature);
       });

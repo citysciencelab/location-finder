@@ -56,11 +56,15 @@ declare interface MapLayer {
   displayName: string;
   type: 'WMS' | 'OSM' | 'Tile' | 'Vector' | 'Heatmap';
   source: Source;
+  sources?: { [stage: string]: Source };
+  category?: string;
+  // Heatmap
   weightAttribute?: string;
   weightAttributeMax?: number;
   gradient?: string[];
   radius?: number;
   blur?: number;
+  // all types
   opacity?: number;
   zIndex?: number;
   visible: boolean;
@@ -73,11 +77,16 @@ declare interface MapLayer {
   extraStyle?: LayerStyle;
   scale?: { [key: string]: ol.Color };
   scaleAttribute?: string;
-  olLayer?: ol.layer.Layer;
-  olDefaultStyleFn?: ol.StyleFunction;
-  olSelectedStyleFn?: ol.StyleFunction;
-  olExtraStyleFn?: ol.StyleFunction;
-  olSelectInteraction?: ol.interaction.Select;
+  // No config - assigned at runtime
+  olLayers: {
+    [stage: string]: {
+      layer: ol.layer.Layer,
+      defaultStyleFn: ol.StyleFunction,
+      selectedStyleFn: ol.StyleFunction,
+      extraStyleFn: ol.StyleFunction,
+      selectInteraction: ol.interaction.Select
+    }
+  };
 }
 // End of Workaround
 
