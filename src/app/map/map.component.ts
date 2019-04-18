@@ -40,7 +40,7 @@ export class MapComponent implements OnInit {
     });
 
     // Emit select/deselect events when a site is selected
-    sitesOlLayer.selectInteraction.on('select', (evt: ol.interaction.Select.Event) => {
+    this.map.selectInteraction.on('select', (evt: ol.interaction.Select.Event) => {
       evt.selected.forEach(feature => {
         this.selectFeature.emit(feature);
       });

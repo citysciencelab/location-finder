@@ -52,7 +52,7 @@ export class TouchscreenComponent implements OnInit {
 
     if (step === 5 && !this.bestPlot) {
       this.bestPlot = this.analysisService.getBestPlot();
-      this.map.zoomTo(this.bestPlot.centerpoint, 13, 17);
+      this.zoomTo(this.bestPlot.centerpoint, 13, 17);
       this.localStorageService.sendComputerSagt(
         this.bestPlot,
         this.plotToRadarChartData(this.bestPlot)
@@ -123,7 +123,7 @@ export class TouchscreenComponent implements OnInit {
 
         // If a plot is selected that hasn't been selected before ...
         if (selected && !this.lastSelectedPlot || selected && selected.getId() !== this.lastSelectedPlot.id) {
-          olcs.dispatchSelectEvent(this.sitesLayer, [selected], coordinate);
+          this.map.dispatchSelectEvent(this.sitesLayer, [selected], coordinate);
           this.initialAngle = object.aAngle;
         }
         if (!this.lastSelectedPlot) {
@@ -240,5 +240,16 @@ export class TouchscreenComponent implements OnInit {
       this.analysisService.normalizeLocationValues(plot)
     ));
     this.localStorageService.sendSetTopPlots(this.analysisService.topPlots, chartData);
+  }
+
+  /*
+   * Zoom out, fly to the feature, zoom in
+   */
+  zoomTo(coordinate: ol.Coordinate, zoom1: number, zoom2: number): void {
+    this.map.getView().animate(
+      { zoom: zoom1 },
+      { center: this.map.fromLonLat(coordinate) },
+      { zoom: zoom2 }
+    );
   }
 }
