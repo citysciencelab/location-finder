@@ -155,7 +155,7 @@ export class TouchscreenComponent implements OnInit {
 
     const object = evt.detail;
 
-    if (event.type === 'removeobject') {
+    if (evt.type === 'removeobject') {
       this.activeMarkers = this.activeMarkers.filter(item => item !== object.classId);
     }
   }
