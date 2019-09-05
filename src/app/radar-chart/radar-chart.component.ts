@@ -4,16 +4,6 @@ import * as Chart from 'chart.js';
 import { ConfigurationService } from '../configuration.service';
 import { RadarChartData } from './radar-chart-data.model';
 
-// This declaration extends the chart.js type definitions (which are inaccurate)
-declare module 'chart.js' {
-  interface ChartOptions {
-    scale?: ChartScales;
-  }
-  interface ChartScales {
-    pointLabels?: PointLabelOptions;
-  }
-}
-
 @Component({
   selector: 'app-radar-chart',
   templateUrl: './radar-chart.component.html',
@@ -25,7 +15,7 @@ export class RadarChartComponent implements OnInit, OnChanges {
   private chart: Chart;
 
   @Input() private chartDatas: RadarChartData[] = [];
-  @Input() private chartOptions: Chart.ChartOptions;
+  @Input() private chartOptions: any;
 
   constructor(@Inject(LOCALE_ID) private locale, private config: ConfigurationService) { }
 

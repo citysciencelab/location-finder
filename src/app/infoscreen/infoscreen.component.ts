@@ -24,7 +24,7 @@ export class InfoscreenComponent {
   topPlotsToDisplay: Plot[] = [];
   topPlotsChartDatas: RadarChartData[] = [];
   targetChartData: RadarChartData;
-  comparisonChartOptions: Chart.ChartOptions = {
+  comparisonChartOptions: any = {
     legend: {
       display: false
     },
