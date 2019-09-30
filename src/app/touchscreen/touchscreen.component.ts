@@ -248,7 +248,7 @@ export class TouchscreenComponent implements OnInit {
   zoomTo(coordinate: ol.Coordinate, zoom1: number, zoom2: number): void {
     this.map.getView().animate(
       { zoom: zoom1 },
-      { center: this.map.fromLonLat(coordinate) },
+      { center: coordinate },
       { zoom: zoom2 }
     );
   }
