@@ -24,9 +24,9 @@
     "@angular/router": "^7.2.13",
     "chart.js": "^2.8.0",
     "core-js": "^3.0.1",
-    "ol-cityscope": "git+ssh://git@github.com/citysciencelab/ol-cityscope.git",
+    "ol-cityscope": "git+https://github.com/citysciencelab/ol-cityscope.git",
     "rxjs": "^6.4.0",
-    "tuio-client": "git+ssh://git@github.com/citysciencelab/tuio-client.git",
+    "tuio-client": "git+https://github.com/citysciencelab/tuio-client.git",
     "zone.js": "^0.8.29"
   },
   "devDependencies": {
