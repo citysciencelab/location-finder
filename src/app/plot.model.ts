@@ -1,11 +1,13 @@
-import * as olcs from 'ol-cityscope';
+import { Coordinate } from 'ol/coordinate';
+import Feature from 'ol/Feature';
+import { getFeatureCenterpoint } from 'ol-cityscope';
 
 export class Plot {
   id: string | number;
   properties: { [k: string]: any };
-  centerpoint: [number, number];
+  centerpoint: Coordinate;
 
-  constructor(feature?: ol.Feature) {
+  constructor(feature?: Feature) {
     if (feature) {
       this.id = feature.getId();
       this.properties = {};
@@ -16,7 +18,7 @@ export class Plot {
         }
         this.properties[key] = value;
       }
-      this.centerpoint = olcs.getFeatureCenterpoint(feature);
+      this.centerpoint = getFeatureCenterpoint(feature);
     }
   }
 }

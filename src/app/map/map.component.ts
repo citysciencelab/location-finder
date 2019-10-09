@@ -1,5 +1,9 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import * as olcs from 'ol-cityscope';
+import MapBrowserEvent from 'ol/MapBrowserEvent';
+import { SelectEvent } from 'ol/interaction/Select';
+import { Vector as VectorSource } from 'ol/source';
+import Feature from 'ol/Feature';
+import { CsMap } from 'ol-cityscope';
 
 import { AnalysisService } from '../analysis.service';
 
@@ -9,11 +13,11 @@ import { AnalysisService } from '../analysis.service';
   styleUrls: ['./map.component.css']
 })
 export class MapComponent implements OnInit {
-  @Output() private selectFeature = new EventEmitter<ol.Feature>();
-  @Output() private deselectFeatures = new EventEmitter<ol.Feature[]>();
-  @Output() private toggleLockFeature = new EventEmitter<ol.Feature>();
+  @Output() private selectFeature = new EventEmitter<Feature>();
+  @Output() private deselectFeatures = new EventEmitter<Feature[]>();
+  @Output() private toggleLockFeature = new EventEmitter<Feature>();
 
-  constructor(private map: olcs.Map, private analysisService: AnalysisService) { }
+  constructor(private map: CsMap, private analysisService: AnalysisService) { }
 
   ngOnInit() {
     this.map.setTarget('map');
@@ -27,11 +31,11 @@ export class MapComponent implements OnInit {
       throw new Error('Site layer is missing');
     }
     const sitesOlLayer = sitesLayer.olLayers['*'];
-    const sitesSource = <ol.source.Vector>sitesOlLayer.layer.getSource();
+    const sitesSource = <VectorSource>sitesOlLayer.layer.getSource();
 
     // When the site layer is added, keep track of the map features. We'll need them later
-    sitesOlLayer.layer.getSource().on('change', (evt: ol.events.Event) => {
-      const features = (<ol.source.Vector>evt.target).getFeatures();
+    sitesOlLayer.layer.getSource().on('change', (evt: Event) => {
+      const features = (<VectorSource>evt.target).getFeatures();
       for (const feature of features) {
         this.map.mapFeaturesById[feature.getId()] = feature;
       }
@@ -40,7 +44,7 @@ export class MapComponent implements OnInit {
     });
 
     // Emit select/deselect events when a site is selected
-    this.map.selectInteraction.on('select', (evt: ol.interaction.Select.Event) => {
+    this.map.selectInteraction.on('select', (evt: SelectEvent) => {
       evt.selected.forEach(feature => {
         this.selectFeature.emit(feature);
       });
@@ -48,14 +52,16 @@ export class MapComponent implements OnInit {
     });
 
     // Emit an event when a site is doubleclicked
-    this.map.on('dblclick', (evt: ol.MapBrowserEvent) => {
+    this.map.on('dblclick', (evt: MapBrowserEvent) => {
       const feature = sitesSource.getFeaturesAtCoordinate(evt.coordinate)[0];
 
       if (feature) {
         // Prevent the default behaviour (zoom)
         evt.preventDefault();
         this.toggleLockFeature.emit(feature);
+        return true;
       }
+      return false;
     });
   }
 }

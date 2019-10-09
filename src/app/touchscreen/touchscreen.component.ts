@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import Feature from 'ol/Feature';
+import { Coordinate } from 'ol/coordinate';
 import { TuioClient } from 'tuio-client';
-import * as olcs from 'ol-cityscope';
+import { CsMap, MapLayer } from 'ol-cityscope';
 
 import { environment } from '../../environments/environment';
 import { ConfigurationService } from '../configuration.service';
@@ -28,7 +30,7 @@ export class TouchscreenComponent implements OnInit {
   private sitesLayer: MapLayer;
 
   constructor(private config: ConfigurationService, private localStorageService: LocalStorageService, private tuioClient: TuioClient,
-    private map: olcs.Map, private analysisService: AnalysisService) { }
+    private map: CsMap, private analysisService: AnalysisService) { }
 
   ngOnInit() {
     this.sitesLayer = this.map.getTopicLayerByName('sites');
@@ -166,7 +168,7 @@ export class TouchscreenComponent implements OnInit {
     this.sendSetCriteria();
   }
 
-  onSelectFeature(olFeature: ol.Feature) {
+  onSelectFeature(olFeature: Feature) {
     const featureId = olFeature.getId();
     if (this.analysisService.topPlots.find(item => item.id === featureId)) {
       this.map.applyExtraStyle(featureId, this.sitesLayer);
@@ -179,7 +181,7 @@ export class TouchscreenComponent implements OnInit {
     this.sendSelectPlot(plot);
   }
 
-  onDeselectFeatures(olFeatures: ol.Feature[]) {
+  onDeselectFeatures(olFeatures: Feature[]) {
     olFeatures.forEach(olFeature => {
       const featureId = olFeature.getId();
       if (this.analysisService.topPlots.find(item => item.id === featureId)) {
@@ -190,7 +192,7 @@ export class TouchscreenComponent implements OnInit {
     });
   }
 
-  onToggleLockFeature(olFeature: ol.Feature) {
+  onToggleLockFeature(olFeature: Feature) {
     const featureId = olFeature.getId();
     const plot = this.analysisService.findPlotById(featureId);
     const locked = !!this.analysisService.findTopPlotById(featureId);
@@ -245,7 +247,7 @@ export class TouchscreenComponent implements OnInit {
   /*
    * Zoom out, fly to the feature, zoom in
    */
-  zoomTo(coordinate: ol.Coordinate, zoom1: number, zoom2: number): void {
+  zoomTo(coordinate: Coordinate, zoom1: number, zoom2: number): void {
     this.map.getView().animate(
       { zoom: zoom1 },
       { center: coordinate },

@@ -1,4 +1,5 @@
 import { Inject, Injectable, LOCALE_ID } from '@angular/core';
+import Feature from 'ol/Feature';
 
 import { ConfigurationService } from './configuration.service';
 import { Plot } from './plot.model';
@@ -24,7 +25,7 @@ export class AnalysisService {
     );
   }
 
-  setAllPlots(features: ol.Feature[]): void {
+  setAllPlots(features: Feature[]): void {
     this.allPlots = features.map(feature => new Plot(feature));
   }
 

@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { TuioClient } from 'tuio-client';
-import { Map } from 'ol-cityscope';
+import { CsMap } from 'ol-cityscope';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
@@ -39,8 +39,8 @@ import { AnalysisService } from './analysis.service';
       deps: [ConfigurationService]
     },
     {
-      provide: Map,
-      useFactory: (config: ConfigurationService) => new Map(config),
+      provide: CsMap,
+      useFactory: (config: ConfigurationService) => new CsMap(config),
       deps: [ConfigurationService]
     }
   ],

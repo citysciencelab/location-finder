@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
+import { MapLayer } from 'ol-cityscope';
 
+import { SearchCriterion } from '../typings.js';
 import config from './config.json';
 
 @Injectable()
@@ -14,7 +16,7 @@ export class ConfigurationService {
   tuioCursorEvents: boolean;
 
   constructor() {
-    this.baseLayers = config. baseLayers;
+    this.baseLayers = config.baseLayers;
     this.topicLayers = config.topicLayers;
     this.progressMarkerID = config.progressMarkerID;
     this.selectionMarkerID = config.selectionMarkerID;
