@@ -13,7 +13,10 @@ export class AppComponent implements OnInit {
   constructor(private config: ConfigurationService) { }
 
   ngOnInit() {
-    if (!environment.production) {
+    if (environment.production) {
+      // Disable the context menu on right-click (or long-tap on touch interfaces)
+      document.body.oncontextmenu = () => false;
+    } else {
       console.log(this.config);
     }
   }
