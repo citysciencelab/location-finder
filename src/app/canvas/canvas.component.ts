@@ -11,8 +11,8 @@ import { AnalysisService } from '../analysis.service';
   styleUrls: ['./canvas.component.css']
 })
 export class CanvasComponent implements AfterViewInit, OnChanges {
-  @ViewChild('tuioCanvas') canvasRef: ElementRef;
-  @ViewChild('mainContainer') mainContainerRef: ElementRef;
+  @ViewChild('tuioCanvas', { static: false }) canvasRef: ElementRef;
+  @ViewChild('mainContainer', { static: false }) mainContainerRef: ElementRef;
   width = 0;
   height = 0;
   private ctx: CanvasRenderingContext2D;

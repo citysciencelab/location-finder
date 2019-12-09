@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, OnInit, OnChanges, Inject, LOCALE_ID, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, AfterViewInit, OnChanges, Inject, LOCALE_ID, ViewChild } from '@angular/core';
 import * as Chart from 'chart.js';
 
 import { ConfigurationService } from '../configuration.service';
@@ -9,8 +9,8 @@ import { RadarChartData } from './radar-chart-data.model';
   templateUrl: './radar-chart.component.html',
   styleUrls: ['./radar-chart.component.css']
 })
-export class RadarChartComponent implements OnInit, OnChanges {
-  @ViewChild('chartCanvas') canvasRef: ElementRef;
+export class RadarChartComponent implements AfterViewInit, OnChanges {
+  @ViewChild('chartCanvas', { static: false }) canvasRef: ElementRef;
   private ctx: CanvasRenderingContext2D;
   private chart: Chart;
 
@@ -19,7 +19,7 @@ export class RadarChartComponent implements OnInit, OnChanges {
 
   constructor(@Inject(LOCALE_ID) private locale, private config: ConfigurationService) { }
 
-  ngOnInit() {
+  ngAfterViewInit() {
     this.ctx = this.canvasRef.nativeElement.getContext('2d');
 
     // Default options - can be overridden by input
