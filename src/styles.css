@@ -130,10 +130,18 @@ body {
   float: left;
 }
 
+#kongress img {
+  width: 100%;
+}
+
+#kongress .copyright {
+  font-size: 12px;
+}
+
 #introtext {
   margin-top: 40px;
   margin-left: 120px;
-    font-size: 32px;
+  font-size: 32px;
 }
 
 #introtext p {

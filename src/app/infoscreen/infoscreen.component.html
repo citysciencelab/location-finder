@@ -11,7 +11,10 @@
         <p class="subheader" i18n>Conference room, seminar rooms, exhibition rooms, 1000 beds</p>
       </div>
       <div id="introtext">
-        <img id="kongress" src="./assets/Bild1.png">
+        <div id="kongress">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Congress_Plaza_Hotel_-_Chicago_-_October_2012.JPG/800px-Congress_Plaza_Hotel_-_Chicago_-_October_2012.JPG"/>
+          <span class="copyright">Image by <a href="https://commons.wikimedia.org/wiki/User:IvoShandor">IvoShandor</a>, <a href="https://creativecommons.org/licenses/by-sa/3.0">CC BY-SA 3.0</a></span>
+        </div>
         <p i18n>11 plots have been preselected based on the following criteria:</p>
         <ul>
           <li i18n>20.000 m² floor space or more</li>
@@ -48,7 +51,7 @@
           </div>
           <table>
             <tr><td><b>{{selectedPlot.properties.Adresse}}</b></td></tr>
-            <tr><td><img [src]="'./assets/' + selectedPlot.id + '.JPG'" class="infoimage" /></td></tr>
+            <tr><td><img [src]="'./assets/example/' + selectedPlot.id + '.JPG'" class="infoimage" /></td></tr>
             <tr><td><b i18n="@@Area_long">Area:</b> {{selectedPlot.properties.Gesamtarea}} m²</td><tr>
             <tr><td><b i18n="@@Scientific_long">Scientific institutions within 3 km radius:</b> {{selectedPlot.properties.Scientific}}</td><tr>
             <tr><td><b i18n="@@Hotels_long">Hotels within 1 km radius:</b> {{selectedPlot.properties.Hotels1km}}</td></tr>

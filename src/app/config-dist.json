@@ -24,7 +24,7 @@
       "displayName": "Sites",
       "type": "Vector",
       "source": {
-        "url": "http://csl.local.hcuhh.de:8080/geoserver/locationfinder/wms?service=WFS&version=1.1.0&request=GetFeature&typeName=locationfinder:grundstuecke&outputFormat=application/json&srsname=EPSG:4326",
+        "url": "assets/example/sites.json",
         "format": "GeoJSON"
       },
       "visible": true,
@@ -104,6 +104,6 @@
       "markerID": 7
     }
   ],
-  "enableTuio": true,
-  "tuioCursorEvents": true
+  "enableTuio": false,
+  "tuioCursorEvents": false
 }
