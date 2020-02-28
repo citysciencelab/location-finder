@@ -1,7 +1,7 @@
 {
   "name": "location-finder",
-  "version": "0.1.1",
-  "license": "MIT",
+  "version": "1.0.0",
+  "license": "GPL-3.0-or-later",
   "scripts": {
     "ng": "ng",
     "start": "ng serve --aot --host 0.0.0.0",
