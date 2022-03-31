@@ -4,10 +4,7 @@ The LocationFinder is an evidence-based tool to assist decision makers in findin
 
 It is intended to run on a two-screen setup, one of which is a table-like multitouch device. Tangible objects may be used to interact with the application if the touch device supports the [TUIO protocol](https://www.tuio.org/).
 
-![LocationFinder Video](https://cloud.hcu-hamburg.de/nextcloud/s/fdajoxLrYK5Xeko)
-
-[Clicke here](https://cloud.hcu-hamburg.de/nextcloud/s/fdajoxLrYK5Xeko) if the video doesn't load.
-
+https://user-images.githubusercontent.com/36763878/161039252-2b808c95-a97b-4a0b-870e-5cd72710928e.mp4
 
 ![LocationFinder setup](doc/locationfinder.jpg)
 
