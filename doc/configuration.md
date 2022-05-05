@@ -1,6 +1,6 @@
 # Configuration reference
 
-The [configuration file](src/app/config-dist.json) is used to set up the map layers, application-specific data and interaction options.
+The [configuration file](../src/app/config-dist.json) is used to set up the map layers, application-specific data and interaction options.
 
 - **`baseLayers`** Background maps. See [ol-cityscope](https://github.com/citysciencelab/ol-cityscope) for detailed documentation
 - **`topicLayers`** Thematic maps and (necessarily) the dataset containing the portfolio of available locations. See [ol-cityscope](https://github.com/citysciencelab/ol-cityscope) for detailed documentation
