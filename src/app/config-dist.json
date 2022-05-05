@@ -7,7 +7,7 @@
       "source": {
         "url": "https://geodienste.hamburg.de/HH_WMS_DOP",
         "wmsParams": {
-          "LAYERS": "1",
+          "LAYERS": "DOP",
           "FORMAT": "image/jpeg",
           "TILED": true,
           "WIDTH": 256,
